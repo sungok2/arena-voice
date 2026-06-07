@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Arena Voice</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6d28d9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="logo">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" fill="currentColor"/>
+                    <path d="M19 10v1a7 7 0 0 1-14 0v-1H3v1a9 9 0 0 0 8 8.94V22h2v-2.06A9 9 0 0 0 21 11v-1h-2z" fill="currentColor"/>
+                </svg>
+                <h1>Arena Voice</h1>
+            </div>
+            <button id="settingsBtn" aria-label="설정">⚙️</button>
+        </header>
+
+        <main id="chat">
+            <div id="messages"></div>
+            <div id="welcome">
+                <img src="icon-512.png" alt="" width="80" height="80">
+                <h2>음성으로 대화하세요</h2>
+                <p>갤럭시 S20에 최적화된 Arena Agent Mode</p>
+                <p class="hint">마이크 버튼을 누르고 말해보세요<br>이전 대화는 자동 저장됩니다</p>
+            </div>
+        </main>
+
+        <footer>
+            <div class="input-bar">
+                <button id="micBtn" class="mic" aria-label="음성 입력">
+                    <svg viewBox="0 0 24 24" width="28" height="28">
+                        <path fill="currentColor" d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+                    </svg>
+                </button>
+                <input id="textInput" type="text" placeholder="메시지 입력 또는 마이크 터치" autocomplete="off">
+                <button id="sendBtn" aria-label="전송">➤</button>
+            </div>
+            <div id="status">준비됨</div>
+        </footer>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings" class="modal hidden">
+        <div class="modal-content">
+            <h3>설정</h3>
+            <label>
+                Arena API 키
+                <input id="apiKey" type="password" placeholder="ak_live_...">
+                <small>arena.social 또는 Arena API 키를 입력하세요</small>
+            </label>
+            <label>
+                API 엔드포인트
+                <input id="apiEndpoint" type="text" value="https://api.starsarena.com">
+            </label>
+            <label>
+                음성 언어
+                <select id="voiceLang">
+                    <option value="ko-KR">한국어</option>
+                    <option value="en-US">English</option>
+                    <option value="ja-JP">日本語</option>
+                </select>
+            </label>
+            <label class="toggle">
+                <input id="autoSpeak" type="checkbox" checked>
+                <span>응답 자동 읽기 (TTS)</span>
+            </label>
+            <label class="toggle">
+                <input id="continuous" type="checkbox">
+                <span>연속 대화 모드</span>
+            </label>
+            <div class="modal-actions">
+                <button id="clearHistory">대화 기록 삭제</button>
+                <button id="closeSettings" class="primary">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
