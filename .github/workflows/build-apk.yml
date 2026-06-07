@@ -1,0 +1,21 @@
+name: Build Arena Voice APK
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - uses: android-actions/setup-android@v3
+    - run: |
+        cd arena-android
+        chmod +x gradlew
+        ./gradlew assembleRelease
+    - uses: actions/upload-artifact@v4
+      with:
+        name: arena-voice-apk
+        path: app/build/outputs/apk/release/app-release.apk
