@@ -1,6 +1,8 @@
 name: Build Arena Voice APK
 on:
   workflow_dispatch:
+env:
+  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,11 +13,15 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     - uses: android-actions/setup-android@v3
-    - run: |
-        cd arena-android
-        chmod +x gradlew
-        ./gradlew assembleRelease
-    - uses: actions/upload-artifact@v4
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew || echo "no gradlew"
+    - name: Build APK
+      run: |
+        mkdir -p app/src/main/java/com/arena/voice
+        # 파일이 루트에 있으므로 직접 빌드
+        gradle assembleDebug --no-daemon || ./gradlew assembleDebug
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
       with:
         name: arena-voice-apk
-        path: app/build/outputs/apk/release/app-release.apk
+        path: app/build/outputs/apk/debug/*.apk
