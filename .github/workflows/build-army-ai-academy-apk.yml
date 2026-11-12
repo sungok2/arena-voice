@@ -50,7 +50,7 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-EXCELLENCE-ACADEMY-1.0-RC1-debug
+          name: ARMY-AI-EXCELLENCE-ACADEMY-1.0-RC2-debug
           path: android-army-academy/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
