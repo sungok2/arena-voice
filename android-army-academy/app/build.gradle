@@ -2,21 +2,38 @@ plugins {
     id 'com.android.application'
 }
 
+def persistentStore = System.getenv('ACADEMY_RELEASE_KEYSTORE_PATH')
+
 android {
     namespace 'com.sungok2.armyaiacademy'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId 'com.sungok2.armyaiacademy'
         minSdk 26
-        targetSdk 35
-        versionCode 2
-        versionName '1.0.0-rc2'
+        targetSdk 36
+        versionCode 3
+        versionName '2.0.0-rc3'
+    }
+
+    signingConfigs {
+        if (persistentStore) {
+            production {
+                storeFile file(persistentStore)
+                storePassword System.getenv('ACADEMY_RELEASE_STORE_PASSWORD')
+                keyAlias System.getenv('ACADEMY_RELEASE_KEY_ALIAS')
+                keyPassword System.getenv('ACADEMY_RELEASE_KEY_PASSWORD')
+            }
+        }
     }
 
     buildTypes {
         release {
+            // Without a managed persistent keystore this build is an evaluation APK,
+            // not an approved production distribution signing identity.
+            signingConfig persistentStore ? signingConfigs.production : signingConfigs.debug
             minifyEnabled false
+            debuggable false
         }
     }
 

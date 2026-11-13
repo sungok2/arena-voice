@@ -1,4 +1,5 @@
-name: Build Army AI Excellence Academy APK
+name: Build Army AI Academy Android release preview
+
 on:
   push:
     branches: [main]
@@ -6,51 +7,91 @@ on:
       - 'android-army-academy/**'
       - '.github/workflows/build-army-ai-academy-apk.yml'
   workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
   build-apk:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - name: Java 17
+
+      - name: Set up Java 17
         uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
-      - name: Set up Android SDK command line tools
+
+      - name: Set up Android SDK
         uses: android-actions/setup-android@v4
-      - name: Android SDK 35
-        run: |
-          sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
-      - name: Setup Gradle 8.11.1
+
+      - name: Install Android SDK API 36
+        run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0'
+
+      - name: Set up Gradle 8.13
         uses: gradle/actions/setup-gradle@v6
         with:
-          gradle-version: '8.11.1'
-      - name: Verify offline educational UI
+          gradle-version: '8.13'
+
+      - name: JavaScript syntax verification
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          s=Path('android-army-academy/app/src/main/assets/index.html').read_text(encoding='utf-8')
-          assert 'ARMY AI EXCELLENCE ACADEMY' in s
-          assert '12주' in s and '42개 과목' in s
-          assert 'ArmyNative.saveJson' in s
-          assert '<script src="http' not in s
-          print('Offline educational HTML checked:',len(s),'characters')
-          PY
-      - name: Build Android debug APK
+          for p in app.js data_core.js data_assessment.js data_plan.js; do
+            node --check "android-army-academy/app/src/main/assets/$p"
+          done
+
+      - name: Course content and time allocation audit
+        run: python3 android-army-academy/qa/content_audit.py
+
+      - name: Optional production signing setup
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.ACADEMY_RELEASE_KEYSTORE_BASE64 }}
+          RELEASE_STORE_PASSWORD: ${{ secrets.ACADEMY_RELEASE_STORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.ACADEMY_RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.ACADEMY_RELEASE_KEY_PASSWORD }}
+        run: |
+          if [[ -n "$RELEASE_KEYSTORE_BASE64" && -n "$RELEASE_STORE_PASSWORD" && -n "$RELEASE_KEY_ALIAS" && -n "$RELEASE_KEY_PASSWORD" ]]; then
+            echo "$RELEASE_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/army-academy-release.jks"
+            echo "ACADEMY_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/army-academy-release.jks" >> "$GITHUB_ENV"
+            echo "ACADEMY_RELEASE_STORE_PASSWORD=$RELEASE_STORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "ACADEMY_RELEASE_KEY_ALIAS=$RELEASE_KEY_ALIAS" >> "$GITHUB_ENV"
+            echo "ACADEMY_RELEASE_KEY_PASSWORD=$RELEASE_KEY_PASSWORD" >> "$GITHUB_ENV"
+            echo "Release signing: persistent key from encrypted GitHub Actions secrets"
+          else
+            echo "Release signing: evaluation-only development key (NOT production signing)"
+          fi
+
+      - name: Android lint, build and package
         working-directory: android-army-academy
-        run: gradle :app:assembleDebug --no-daemon --stacktrace
-      - name: Print APK SHA256
-        run: sha256sum android-army-academy/app/build/outputs/apk/debug/app-debug.apk
-      - name: Upload APK artifact
+        run: gradle :app:lintRelease :app:assembleRelease :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Validate release APK manifest, signature and SHA256
+        run: |
+          APK=android-army-academy/app/build/outputs/apk/release/app-release.apk
+          echo '=== APK metadata ==='
+          aapt dump badging "$APK" | grep -E '^package:|^sdkVersion:|^targetSdkVersion:'
+          echo '=== APK signature ==='
+          apksigner verify --verbose "$APK"
+          echo '=== SHA256 ==='
+          sha256sum "$APK"
+          sha256sum android-army-academy/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload preview-installable release APK
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-EXCELLENCE-ACADEMY-1.0-RC2-debug
-          path: android-army-academy/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
+          name: ARMY-AI-ACADEMY-v2-RC3-RELEASE-PREVIEW
+          path: android-army-academy/app/build/outputs/apk/release/app-release.apk
           retention-days: 30
+          if-no-files-found: error
+
+      - name: Upload debug APK for QA
+        uses: actions/upload-artifact@v6
+        with:
+          name: ARMY-AI-ACADEMY-v2-RC3-DEBUG-QA
+          path: android-army-academy/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14
+          if-no-files-found: error

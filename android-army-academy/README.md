@@ -1,31 +1,38 @@
-# ARMY AI EXCELLENCE ACADEMY — Android RC
+# ARMY AI EXCELLENCE ACADEMY — v2.0 RC3
+**Professional learning prototype; not officially certified by the ROK Army.**
+This project is isolated under `android-army-academy/`; the repository-root Arena Voice PWA is unchanged.
 
-This Android application embeds the user's **2026-11-12 v1.0 RC** offline HTML interface. The existing Arena Voice PWA in the repository root is preserved unchanged.
+## Features
+- Responsive original navy/teal learning dashboard and 5-tab mobile navigation.
+- 42 courses with 252 modules and domain-specific concept/pitfall summaries.
+- 210 instructor-review-required reflective questions, five per course.
+- 30 multiple-choice diagnostic questions across three fields, explanation review.
+- 12-week 144-hour personal specialization plan; verified 34:33:33 balanced schedule.
+- 14-item AI business-planning Capstone checklist.
+- Local-only notes, course progress, bookmarks and optional demo XP. Export JSON through Android Storage Access Framework.
+- Optional original synthesized UI sounds, volume, haptics, font scale, contrast and reduced-motion settings (audio off by default).
+- No INTERNET permission, no external API, no telemetry, no classified/operational data.
 
-- Package: `com.sungok2.armyaiacademy`
-- Java 17, Android Gradle Plugin 8.9.2, Gradle 8.11.1
-- compileSdk/targetSdk 35, minSdk 26
-- AndroidX WebViewAssetLoader serves the bundled `assets/index.html` through a trusted local HTTPS origin.
-- No Android INTERNET permission; external navigations and subresources blocked.
-- Diagnostic, 42-course catalog, selected specialization ratios, 12-week plan, Capstone and demo XP from existing offline UI.
-- JSON export uses Android's user-selected document picker; app does not request broad storage permissions.
-- No actual Army systems/data or remote API integration.
-- Debug APK is for local testing. Not production signed, not approved by an Army security authority.
+## Security and certification
+All local progress and XP are self-reported and *not* professional or military qualification evidence.
+Academic contents remain editorial drafts; actual instructor review and Army security authorization have **not** been completed.
+A sensitive military or real personal record must not be entered.
 
 ## Build
-
-From `android-army-academy/`, run:
+Android Gradle Plugin 8.13.2, Gradle 8.13, JDK 17, compile/target SDK 36, min SDK 26.
 
 ```bash
-gradle :app:assembleDebug --no-daemon
+cd android-army-academy
+gradle :app:lintRelease :app:assembleRelease
 ```
 
-The workflow `.github/workflows/build-army-ai-academy-apk.yml` builds and uploads `app-debug.apk` as an Actions artifact.
+## Signing
+If `ACADEMY_RELEASE_KEYSTORE_BASE64`, `ACADEMY_RELEASE_STORE_PASSWORD`, `ACADEMY_RELEASE_KEY_ALIAS` and `ACADEMY_RELEASE_KEY_PASSWORD` are configured as GitHub Actions secrets, CI uses the persistent release key.
+Otherwise, the release variant is signed with a **development key solely to permit local device evaluation**. It MUST NOT be distributed as the final production signed identity and may not install over RC2 due to a different signing certificate. Do not upload a keystore to this public repository.
+A privately managed persistent signing key and legitimate distribution approval are required for production.
 
-## Verification limits
+## Testing
+`qa/content_audit.py` checks catalog count, module count, assessment count, balanced allocation and bundled offline resources. Android CI performs JS syntax, lint, APK build, signature and SHA-256 checks. Headless Chromium desktop/mobile interaction tests run separately; physical Samsung device validation remains outstanding.
 
-Only GitHub Actions can confirm Android compilation in this build environment. HTML quiz answers are included for self-study, not trusted certification. 12-week 144h is a proposed curriculum. Official approval remains pending.
-
-## Original source
-
-ARMY_AI_EXCELLENCE_ACADEMY_v1.0_RC.zip — `ui/index.html`, supplied in this conversation.
+## Source
+2026-11-12 v1.0 RC package and the user's refined 34:33:33 curriculum. This remains an educational design proposal, not an approved Army course.
