@@ -1,6 +1,5 @@
 package com.sungok2.armyaiacademy;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Insets;
 import android.net.Uri;
@@ -17,13 +16,15 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import androidx.webkit.WebViewAssetLoader;
+import androidx.activity.ComponentActivity;
+import androidx.activity.OnBackPressedCallback;
 
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ComponentActivity {
     private static final int EXPORT_REQUEST = 1207;
     private static final String LOCAL_HOST = "appassets.androidplatform.net";
     private static final String START_URL = "https://" + LOCAL_HOST + "/assets/index.html";
@@ -96,6 +97,23 @@ public class MainActivity extends Activity {
         });
 
         setContentView(webView);
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (webView == null) {
+                    finish();
+                    return;
+                }
+                webView.evaluateJavascript(
+                    "window.handleAndroidBack ? window.handleAndroidBack() : false;",
+                    handled -> {
+                        if (!"true".equals(handled)) {
+                            finish();
+                        }
+                    }
+                );
+            }
+        });
         webView.loadUrl(START_URL);
     }
 
@@ -138,21 +156,7 @@ public class MainActivity extends Activity {
         pendingJson = null;
     }
 
-    @Override
-    public void onBackPressed() {
-        if (webView == null) {
-            super.onBackPressed();
-            return;
-        }
-        webView.evaluateJavascript(
-            "window.handleAndroidBack ? window.handleAndroidBack() : false;",
-            handled -> {
-                if (!"true".equals(handled)) {
-                    MainActivity.super.onBackPressed();
-                }
-            }
-        );
-    }
+
 
     @Override
     protected void onDestroy() {
