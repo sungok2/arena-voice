@@ -73,9 +73,9 @@ jobs:
         run: |
           APK=android-army-academy/app/build/outputs/apk/release/app-release.apk
           echo '=== APK metadata ==='
-          aapt dump badging "$APK" | grep -E '^package:|^sdkVersion:|^targetSdkVersion:'
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | grep -E '^package:|^sdkVersion:|^targetSdkVersion:'
           echo '=== APK signature ==='
-          apksigner verify --verbose "$APK"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose "$APK"
           echo '=== SHA256 ==='
           sha256sum "$APK"
           sha256sum android-army-academy/app/build/outputs/apk/debug/app-debug.apk
