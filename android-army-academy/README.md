@@ -36,3 +36,12 @@ A privately managed persistent signing key and legitimate distribution approval 
 
 ## Source
 2026-11-12 v1.0 RC package and the user's refined 34:33:33 curriculum. This remains an educational design proposal, not an approved Army course.
+
+
+## RC4 usability & resilience
+
+- Persistent, versioned self-study backup export and Android SAF JSON import (2MB limit).
+- Backup fields strictly validated against the bundled 42 course IDs and known learning record schema; re-import requires user confirmation.
+- Short synthesized audio cues share a single AudioContext and remain off by default. Optional vibration permission.
+- Android APK release preview is NOT production signing unless GitHub Actions secrets provide a persistent release keystore.
+- Personal local storage is not encrypted at rest by the app; never input military or sensitive personal information.

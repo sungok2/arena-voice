@@ -44,6 +44,9 @@ jobs:
             node --check "android-army-academy/app/src/main/assets/$p"
           done
 
+      - name: Backup restore schema tests
+        run: node android-army-academy/qa/backup_test.js
+
       - name: Course content and time allocation audit
         run: python3 android-army-academy/qa/content_audit.py
 
@@ -83,7 +86,7 @@ jobs:
       - name: Upload preview-installable release APK
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-v2-RC3-RELEASE-PREVIEW
+          name: ARMY-AI-ACADEMY-v2-RC4-RELEASE-PREVIEW
           path: android-army-academy/app/build/outputs/apk/release/app-release.apk
           retention-days: 30
           if-no-files-found: error
@@ -91,7 +94,7 @@ jobs:
       - name: Upload debug APK for QA
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-v2-RC3-DEBUG-QA
+          name: ARMY-AI-ACADEMY-v2-RC4-DEBUG-QA
           path: android-army-academy/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 14
           if-no-files-found: error

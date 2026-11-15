@@ -11,6 +11,7 @@ html=files[0].read_text(encoding='utf-8')
 assert all(f'src="{p.name}"' in html or f'href="{p.name}"' in html for p in files[1:]),'missing asset script/style references'
 assert not re.search(r'<(?:script|link)[^>]+(?:src|href)=["\']https?://',html,re.I),'remote resource found'
 assert 'ArmyNative' in files[2].read_text(encoding='utf-8'),'Android export bridge absent'
+assert 'window.importAcademyBackup' in files[2].read_text(encoding='utf-8'),'Backup restore absent'
 def data(name,header):
     s=(root/name).read_text(encoding='utf-8').strip();assert s.startswith(header) and s.endswith(';');return json.loads(s[len(header):-1])
 c=data('data_core.js','window.ACADEMY_DATA=')

@@ -1,6 +1,8 @@
 package com.sungok2.armyaiacademy;
 
 import android.content.Intent;
+import android.content.ContentResolver;
+import android.content.ActivityNotFoundException;
 import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Build;
@@ -20,12 +22,17 @@ import androidx.activity.ComponentActivity;
 import androidx.activity.OnBackPressedCallback;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import org.json.JSONObject;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 public class MainActivity extends ComponentActivity {
     private static final int EXPORT_REQUEST = 1207;
+    private static final int IMPORT_REQUEST = 1208;
     private static final String LOCAL_HOST = "appassets.androidplatform.net";
     private static final String START_URL = "https://" + LOCAL_HOST + "/assets/index.html";
 
@@ -119,6 +126,22 @@ public class MainActivity extends ComponentActivity {
 
     private final class ExportBridge {
         @JavascriptInterface
+        public void importJson() {
+            runOnUiThread(() -> {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                intent.putExtra(Intent.EXTRA_MIME_TYPES,
+                        new String[] {"application/json", "text/plain", "application/octet-stream"});
+                try {
+                    startActivityForResult(intent, IMPORT_REQUEST);
+                } catch (ActivityNotFoundException ex) {
+                    Toast.makeText(MainActivity.this, "파일 선택기를 사용할 수 없습니다.", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        @JavascriptInterface
         public void saveJson(String fileName, String json) {
             if (json == null || json.length() > 2_000_000) {
                 runOnUiThread(() -> Toast.makeText(
@@ -142,6 +165,29 @@ public class MainActivity extends ComponentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IMPORT_REQUEST) {
+            if (resultCode == RESULT_OK && data != null && data.getData() != null
+                    && webView != null) {
+                try (InputStream in = getContentResolver().openInputStream(data.getData());
+                     ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                    if (in == null) throw new IOException("Cannot open document");
+                    byte[] chunk = new byte[8192];
+                    int n, total = 0;
+                    while ((n = in.read(chunk)) != -1) {
+                        total += n;
+                        if (total > 2_000_000) throw new IOException("Backup file exceeds 2MB");
+                        out.write(chunk, 0, n);
+                    }
+                    String contents = new String(out.toByteArray(), StandardCharsets.UTF_8);
+                    webView.evaluateJavascript(
+                            "window.importAcademyBackup(" + JSONObject.quote(contents) + ");",
+                            null);
+                } catch (Exception ex) {
+                    Toast.makeText(this, "기록 복원 파일을 읽지 못했습니다.", Toast.LENGTH_LONG).show();
+                }
+            }
+            return;
+        }
         if (requestCode != EXPORT_REQUEST) return;
         if (resultCode == RESULT_OK && data != null && data.getData() != null
                 && pendingJson != null) {
