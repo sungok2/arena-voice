@@ -58,6 +58,12 @@ jobs:
           AAB=android-army-academy/app/build/outputs/bundle/release/app-release.aab
           test -s "$APK" && test -s "$AAB"
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
+          EXPECTED="$(cat android-army-academy/RELEASE_CERT_SHA256.txt)"
+          ACTUAL="$("$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs "$APK" | sed -n 's/Signer #1 certificate SHA-256 digest: //p' | head -n 1)"
+          if [[ "$EXPECTED" != "$ACTUAL" ]]; then
+            echo "::error::Unexpected release signing identity. Refusing to publish a breaking update."
+            exit 21
+          fi
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | grep '^package:'
           jarsigner -verify "$AAB"
           sha256sum "$APK" "$AAB"
