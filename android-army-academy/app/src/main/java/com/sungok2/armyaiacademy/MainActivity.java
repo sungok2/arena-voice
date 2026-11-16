@@ -16,6 +16,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import android.widget.FrameLayout;
 
 import androidx.webkit.WebViewAssetLoader;
 import androidx.activity.ComponentActivity;
@@ -52,14 +53,6 @@ public class MainActivity extends ComponentActivity {
         WebView.setWebContentsDebuggingEnabled(false);
         webView = new WebView(this);
         webView.setBackgroundColor(android.graphics.Color.rgb(8, 19, 33));
-        if (Build.VERSION.SDK_INT >= 35) {
-            webView.setOnApplyWindowInsetsListener((view, insets) -> {
-                Insets bars = insets.getInsets(WindowInsets.Type.systemBars());
-                view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
-                return insets;
-            });
-        }
-
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
@@ -107,7 +100,22 @@ public class MainActivity extends ComponentActivity {
             }
         });
 
-        setContentView(webView);
+        final FrameLayout container = new FrameLayout(this);
+        container.addView(webView, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
+        if (Build.VERSION.SDK_INT >= 35) {
+            container.setOnApplyWindowInsetsListener((view, insets) -> {
+                Insets bars = insets.getInsets(WindowInsets.Type.systemBars());
+                FrameLayout.LayoutParams params =
+                        (FrameLayout.LayoutParams) webView.getLayoutParams();
+                params.setMargins(bars.left, bars.top, bars.right, bars.bottom);
+                webView.setLayoutParams(params);
+                return insets;
+            });
+        }
+        setContentView(container);
+        if (Build.VERSION.SDK_INT >= 35) container.requestApplyInsets();
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {

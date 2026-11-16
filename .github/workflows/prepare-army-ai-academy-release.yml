@@ -57,7 +57,7 @@ jobs:
       - name: Upload unsigned build for secure local signing
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.0.0-UNSIGNED
+          name: ARMY-AI-ACADEMY-2.0.1-UNSIGNED
           path: dist/
           if-no-files-found: error
           retention-days: 1
