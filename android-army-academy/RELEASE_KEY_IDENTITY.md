@@ -1,6 +1,6 @@
 # Release signing identity (PUBLIC CERTIFICATE FINGERPRINT ONLY)
 
-Release version: 2.0.0 (versionCode 5)
+Release version: 2.0.1 (versionCode 6)
 Package: com.sungok2.armyaiacademy
 Certificate SHA-256: c38e1305b47ae27eaa40fa1a19ce2f0c68826150a391a4c0425513908fae6ea6
 Algorithm: RSA 4096
