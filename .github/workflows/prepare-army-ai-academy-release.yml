@@ -1,0 +1,63 @@
+name: Prepare ARMY AI Academy unsigned release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android-army-academy/**'
+      - '.github/workflows/prepare-army-ai-academy-release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package-unsigned:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v4
+      - name: Install Android SDK
+        run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0'
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: '8.13'
+      - name: Verify source and backup rules
+        run: |
+          for p in app.js data_core.js data_assessment.js data_plan.js; do
+            node --check "android-army-academy/app/src/main/assets/$p"
+          done
+          node android-army-academy/qa/backup_test.js
+          python3 android-army-academy/qa/content_audit.py
+          python3 android-army-academy/qa/release_gate.py
+      - name: Android lint and unsigned distributables
+        working-directory: android-army-academy
+        run: gradle :app:lintRelease :app:assembleRelease :app:bundleRelease --no-daemon --stacktrace
+      - name: Verify unsigned production artifacts
+        run: |
+          set -euo pipefail
+          APK=android-army-academy/app/build/outputs/apk/release/app-release-unsigned.apk
+          AAB=android-army-academy/app/build/outputs/bundle/release/app-release.aab
+          test -s "$APK"
+          test -s "$AAB"
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | grep -E '^package:|^sdkVersion:|^targetSdkVersion:'
+          sha256sum "$APK" "$AAB"
+          mkdir -p dist
+          cp "$APK" dist/academy-release-unsigned.apk
+          cp "$AAB" dist/academy-release-unsigned.aab
+          cp "$ANDROID_HOME/build-tools/35.0.0/lib/apksigner.jar" dist/apksigner.jar
+          sha256sum dist/* > dist/SHA256SUMS
+      - name: Upload unsigned build for secure local signing
+        uses: actions/upload-artifact@v6
+        with:
+          name: ARMY-AI-ACADEMY-2.0.0-UNSIGNED
+          path: dist/
+          if-no-files-found: error
+          retention-days: 1

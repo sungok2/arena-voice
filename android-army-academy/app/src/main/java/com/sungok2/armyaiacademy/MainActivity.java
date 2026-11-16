@@ -49,6 +49,7 @@ public class MainActivity extends ComponentActivity {
                 .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))
                 .build();
 
+        WebView.setWebContentsDebuggingEnabled(false);
         webView = new WebView(this);
         webView.setBackgroundColor(android.graphics.Color.rgb(8, 19, 33));
         if (Build.VERSION.SDK_INT >= 35) {
@@ -70,6 +71,9 @@ public class MainActivity extends ComponentActivity {
         settings.setJavaScriptCanOpenWindowsAutomatically(false);
         settings.setSupportMultipleWindows(false);
 
+        android.webkit.CookieManager.getInstance().setAcceptCookie(false);
+        android.webkit.CookieManager.getInstance().setAcceptThirdPartyCookies(webView, false);
+        settings.setGeolocationEnabled(false);
         webView.addJavascriptInterface(new ExportBridge(), "ArmyNative");
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient() {

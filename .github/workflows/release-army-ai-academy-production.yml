@@ -1,0 +1,71 @@
+name: ARMY AI Academy - production signing (owner controlled)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v4
+      - run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0'
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: '8.13'
+      - name: Gate - require all production signing credentials
+        env:
+          KEY_B64: ${{ secrets.ACADEMY_RELEASE_KEYSTORE_BASE64 }}
+          STORE_PASS: ${{ secrets.ACADEMY_RELEASE_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ACADEMY_RELEASE_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ACADEMY_RELEASE_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$KEY_B64" || -z "$STORE_PASS" || -z "$KEY_ALIAS" || -z "$KEY_PASS" ]]; then
+            echo "::error::Production signing credentials are absent. Refusing to substitute the debug key."
+            exit 20
+          fi
+          umask 077
+          printf '%s' "$KEY_B64" | base64 -d > "$RUNNER_TEMP/academy-release.p12"
+          echo "ACADEMY_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/academy-release.p12" >> "$GITHUB_ENV"
+      - name: Verify course data and backup restore
+        run: |
+          for p in app.js data_core.js data_assessment.js data_plan.js; do node --check "android-army-academy/app/src/main/assets/$p"; done
+          node android-army-academy/qa/backup_test.js
+          python3 android-army-academy/qa/content_audit.py
+          python3 android-army-academy/qa/release_gate.py
+      - name: Build signed release APK and AAB
+        working-directory: android-army-academy
+        env:
+          ACADEMY_RELEASE_STORE_PASSWORD: ${{ secrets.ACADEMY_RELEASE_STORE_PASSWORD }}
+          ACADEMY_RELEASE_KEY_ALIAS: ${{ secrets.ACADEMY_RELEASE_KEY_ALIAS }}
+          ACADEMY_RELEASE_KEY_PASSWORD: ${{ secrets.ACADEMY_RELEASE_KEY_PASSWORD }}
+        run: gradle :app:lintRelease :app:assembleRelease :app:bundleRelease --no-daemon --stacktrace
+      - name: Verify production outputs
+        run: |
+          set -euo pipefail
+          APK=android-army-academy/app/build/outputs/apk/release/app-release.apk
+          AAB=android-army-academy/app/build/outputs/bundle/release/app-release.aab
+          test -s "$APK" && test -s "$AAB"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | grep '^package:'
+          jarsigner -verify "$AAB"
+          sha256sum "$APK" "$AAB"
+      - uses: actions/upload-artifact@v6
+        with:
+          name: ARMY-AI-ACADEMY-2.0.0-PRODUCTION-SIGNED
+          path: |
+            android-army-academy/app/build/outputs/apk/release/app-release.apk
+            android-army-academy/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 30

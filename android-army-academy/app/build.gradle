@@ -12,8 +12,8 @@ android {
         applicationId 'com.sungok2.armyaiacademy'
         minSdk 26
         targetSdk 36
-        versionCode 4
-        versionName '2.0.0-rc4'
+        versionCode 5
+        versionName '2.0.0'
     }
 
     signingConfigs {
@@ -31,7 +31,7 @@ android {
         release {
             // Without a managed persistent keystore this build is an evaluation APK,
             // not an approved production distribution signing identity.
-            signingConfig persistentStore ? signingConfigs.production : signingConfigs.debug
+            if (persistentStore) signingConfig signingConfigs.production
             minifyEnabled false
             debuggable false
         }
