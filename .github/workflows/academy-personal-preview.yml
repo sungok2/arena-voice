@@ -1,0 +1,114 @@
+name: ARMY AI Academy installable personal preview APK (temporary signing)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android-army-academy/**'
+      - '.github/workflows/academy-personal-preview.yml'
+  pull_request:
+    paths:
+      - 'android-army-academy/**'
+      - '.github/workflows/academy-personal-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v4
+      - run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0'
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: '8.13'
+      - name: Validate public educational assets before personal preview
+        run: |
+          set -euo pipefail
+          for p in app.js module_draft.js official_curriculum.js performance_practice.js quiz_upgrade.js quiz_applied_v2_3_3.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do
+            node --check "android-army-academy/app/src/main/assets/$p"
+          done
+          node android-army-academy/qa/backup_test.js
+          node android-army-academy/qa/module_draft_test.js
+          node android-army-academy/qa/question_integrity_test.js
+          node android-army-academy/qa/progress_version_gate_test.js
+          node android-army-academy/qa/curriculum_candidate_test.js
+          node android-army-academy/qa/synthetic_practicum_test.js
+          node android-army-academy/qa/performance_case_suite_test.js
+          node android-army-academy/qa/offline_practice_bundle_test.js
+          node android-army-academy/qa/institutional_no_go_test.js
+          python3 android-army-academy/qa/release_gate.py
+      - name: Generate ephemeral preview signing credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          PASS="$(openssl rand -hex 32)"
+          echo "::add-mask::$PASS"
+          KEYSTORE="$RUNNER_TEMP/academy-preview-ephemeral.p12"
+          keytool -genkeypair -noprompt \
+            -storetype PKCS12 -keystore "$KEYSTORE" \
+            -alias academy-preview -keyalg RSA -keysize 3072 -validity 365 \
+            -dname "CN=Temporary Personal Academy Preview, O=Testing Only, C=KR" \
+            -storepass "$PASS" -keypass "$PASS" >/dev/null 2>&1
+          {
+            echo "ACADEMY_PREVIEW_KEYSTORE_PATH=$KEYSTORE"
+            echo "ACADEMY_PREVIEW_STORE_PASSWORD=$PASS"
+            echo "ACADEMY_PREVIEW_KEY_ALIAS=academy-preview"
+            echo "ACADEMY_PREVIEW_KEY_PASSWORD=$PASS"
+          } >> "$GITHUB_ENV"
+      - name: Build non-debuggable installable preview APK
+        working-directory: android-army-academy
+        run: gradle :app:lintPreview :app:assemblePreview --no-daemon --stacktrace
+      - name: Verify Android signature, identity and checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK=android-army-academy/app/build/outputs/apk/preview/app-preview.apk
+          test -s "$APK"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
+          BADGING="$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK")"
+          printf '%s\n' "$BADGING" | grep "^package: name='com.sungok2.armyaiacademy.preview' "
+          printf '%s\n' "$BADGING" | grep "^sdkVersion:'26'"
+          if printf '%s\n' "$BADGING" | grep -q '^application-debuggable'; then
+            echo "::error::Preview must never be debuggable"
+            exit 22
+          fi
+          mkdir -p dist
+          cp "$APK" dist/ARMY-AI-ACADEMY-v2.5.0-PERSONAL-PREVIEW.apk
+          (
+            cd dist
+            sha256sum ARMY-AI-ACADEMY-v2.5.0-PERSONAL-PREVIEW.apk > SHA256SUMS
+          )
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs "$APK" > dist/SIGNING_CERTIFICATE.txt
+          cat > dist/INSTALL-NOTICE.txt <<'NOTICE'
+          ARMY AI ACADEMY v2.5.0 — PERSONAL PREVIEW ONLY
+          
+          Install on Android 8.0 or later from an authorized local APK installer.
+          APK package: com.sungok2.armyaiacademy.preview
+          This is an OFFLINE, non-debuggable Android APK signed with a one-build-only
+          TEMPORARY preview signing key. NO key material is uploaded.
+          WARNING: A future preview APK will have a different key, and CANNOT update
+          this install in place. Export your local learning backup first, uninstall the
+          existing Preview, install the new Preview and import the backup.
+          The Preview is a separate package from the normal app.
+          Never publish as a production signed app, official military software or
+          accredited training. The permanent owner signing key is NOT used here.
+          The public PE cases are formative exercises, not official assessments.
+          NOTICE
+      - uses: actions/upload-artifact@v6
+        with:
+          name: ARMY-AI-ACADEMY-v2.5.0-INSTALLABLE-PERSONAL-PREVIEW
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
