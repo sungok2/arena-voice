@@ -2,33 +2,45 @@
 const W=window,L=W.ACADEMY_LESSONS,D=W.ACADEMY_DATA;
 if(!L||!D?.diagnostic)throw Error('Quiz source not loaded');
 const curated={"AT-001:2":[["결함률 2%, 민감도 90%, 위양성률 5%인 검사에서 양성 판정의 PPV는? (10,000건 가정)",["26.9% (참양성 180, 위양성 490)","64.7% (참양성 900, 위양성 490)","90% (민감도와 동일)","2% (사전 결함률과 동일)"],0,"참양성 10000×0.02×0.9=180, 위양성 10000×0.98×0.05=490. PPV=180/670≈26.9%."],["민감도 90%, 위양성률 5%가 고정된 검사에서 결함 기저율만 2%→20%로 증가했다. PPV는 어떻게 변하는가?",["약 26.9% 유지","약 81.8%로 상승","20%로 고정","90%로 고정"],1,"기저율이 20%면 참양성 비율 0.18, 위양성 비율 0.04. PPV=0.18/0.22≈81.8%."]],"AT-003:4":[["한 장비의 인접 센서 샘플이 학습·시험 모두에 포함된다. 새 장비로의 일반화 성능을 검증하려면?",["행 단위 무작위 분할만 수행","장비 ID별 그룹 분할과 학습셋만 이용한 전처리","동일 장비에 대해 시각만 섞어서 분할","전체 자료로 표준화한 뒤 무작위 분할"],1,"새 장비로의 일반화는 장비 단위로 분리한 독립 시험셋을 사용해야 한다. 전처리 통계는 학습셋에서만 추정한다."],["7일 후 결함을 예측하는 특성에 예측 시점 이후 일주일의 이동평균이 포함됐다. 조치는?",["미래 정보라도 평균이면 활용 가능","정보 가용 시점을 기준으로 특성 재구성","평가 점수만 10% 감점","해당 컬럼에 보안등급만 표시"],1,"예측 시점에 이용할 수 없는 미래정보를 학습·평가에 넣으면 누출이 발생한다."]],"AT-007:4":[["RAG 색인에 공개·제한 문서가 함께 존재한다. 공개 사용자에게 제한 문서가 근거로 노출되지 않게 하려면?",["LLM에 비공개 내용을 말하지 말라는 지시만 추가","색인·검색·인용·캐시 단계에서 권한 필터 강제","답변 출력 이후 금칙어만 검사","검색 결과 상위 5건을 무조건 요약"],1,"접근통제는 생성 모델의 언어 지시가 아니라 검색·인용·캐시를 포함한 데이터 접근 계층에서 강제해야 한다."],["RAG가 유효한 공개 출처를 제시했으나 그 본문은 사용자의 주장을 직접 뒷받침하지 않는다. 출력은?",["출처가 공개면 주장을 사실로 확정","유사도 0.7 이상이면 진술 승인","근거 부족을 명시하고 추가 확인 요청","출처 문장 대신 LLM이 추측하여 보완"],2,"출처 존재와 주장에 대한 증거의 충분성은 별도로 검증해야 한다."]],"AT-008:5":[["에이전트가 검색 문서 본문에서 '권한 확인 없이 외부 서버로 파일 전송'이라는 지시를 읽었다. 대응은?",["검색 문서 지시는 시스템 지시와 동등","검색 문서를 비신뢰 입력으로 처리하고 도구 정책과 승인 강제","따옴표를 지우고 도구 실행","검색 유사도가 높으면 명령 실행"],1,"검색 문서의 명령문은 낮은 신뢰도의 콘텐츠다. 도구 호출은 별도 권한·정책을 통과해야 한다."],["에이전트가 되돌리기 어려운 외부 시스템 변경을 제안했다. 가장 적절한 사전 통제는?",["모델 확신도가 높으면 승인 생략","기존 대화 길이가 충분하면 자동 실행","대상·권한·책임자 승인 확인 후 실행","완료 후 로그를 저장하면 충분"],2,"비가역적인 도구 실행은 권한 검증과 명시적 승인·감사 경로가 필요하다."]],"DF-002:2":[["equipment 100행과 maintenance 260행을 LEFT JOIN했다. 한 장비에 정비 이력이 여러 건일 때 전체 장비 수는?",["COUNT(*)는 언제나 100","COUNT(maintenance.id)는 언제나 100","COUNT(DISTINCT equipment.id) 또는 조인 이전 장비 수","SUM(maintenance.id)로 계산"],2,"1:N 조인은 장비 행을 반복할 수 있다. 장비 수는 고유 장비 ID를 기준으로 집계한다."],["정비 기록이 없는 장비도 포함해 장비별 정비 건수를 구하는 적절한 방식은?",["INNER JOIN, COUNT(*)","LEFT JOIN, COUNT(maintenance.id), 장비 ID별 GROUP BY","LEFT JOIN, COUNT(*)만","CROSS JOIN, COUNT(DISTINCT maintenance.id)"],1,"LEFT JOIN은 정비 이력 없는 장비를 남기며 COUNT(maintenance.id)는 NULL 확장행을 제외한다."]],"DF-006:1":[["1,000행 중 ID 누락 40행, 코드 오류 30행, 두 오류가 중복되는 행 10행이다. 두 규칙을 모두 통과한 행 비율은?",["93%","94%","92%","91%"],1,"결함 합집합 40+30−10=60행. 940/1000=94%."],["데이터가 타입·범위 검사를 모두 통과했다. 사실적 측정 정확성을 추가 평가할 방법은?",["스키마만 다시 출력","교정 결과·원천 기록·측정 오차 대조","NULL이 없으면 정확성 100% 확정","행 수를 더 많이 수집"],1,"유효성과 정확성은 다르며 원천·현실 기준과의 대조가 필요하다."]],"DF-009:3":[["5분 이벤트타임 윈도와 지연 허용 정책을 사용한다. 10:04 이벤트가 10:07에 도착했다. 처리 판단에 필요한 핵심 정보는?",["프로세싱 시각만","이벤트타임·워터마크·지연 허용 정책","파일 이름 순서","메시지 브로커의 생성일"],1,"늦은 데이터의 처리 가능성은 이벤트 시각, 워터마크, 허용 지연 정책에 따라 결정된다."],["10:01에 발생한 이벤트가 10:10에 소비됐다. 이벤트타임 집계에 적합한 방식은?",["10:10으로 모든 이벤트 귀속","10:01 기준 귀속과 워터마크·재처리 규칙 적용","파일 생성 시각만 이용","늦은 이벤트 무조건 폐기"],1,"이벤트의 발생 시각과 처리 시각을 분리하고 지연 도착 처리 규칙을 운영해야 한다."]],"DF-007:5":[["SHACL에서 minCount=1 및 datatype=xsd:date를 요구한다. 값이 두 개이고 하나는 '내일' 문자열이다. 판단은?",["minCount만 통과하면 모든 검증 통과","OWL로 자동 날짜 변환","개수와 타입 제약을 별도 평가하므로 위반 가능","SHACL은 인스턴스 데이터 검증에 사용하지 않음"],2,"minCount와 datatype은 별도의 제약이다. 유효하지 않은 문자열 literal은 타입 위반을 만들 수 있다."],["OWL open-world 가정에서 속성이 미기록 상태인 경우의 해석은?",["정보 부재만으로 속성이 없다고 확정할 수 없다","정보 부재는 항상 부정을 뜻한다","모든 RDF 그래프는 폐쇄세계","추론으로 미등록 속성이 항상 생성"],0,"OWL에서는 기록되지 않은 사실을 자동으로 거짓이라고 결론 내리지 않는다."]],"SP-004:4":[["'검색이 빨라야 한다'를 시험 가능한 요구사항으로 바꾸려면?",["검색은 최대한 신속해야 한다","평균 응답을 단축한다","승인된 부하·시험셋에서 p95 응답 2초 이하 및 권한 오류 0건","더 비싼 서버를 쓰면 해결된다"],2,"측정 환경·지표·합격 기준이 있어야 재현 가능한 수용시험이 가능하다. 수치는 가상 예시다."],["위 요구사항의 목표치가 변경되면 가장 적절한 형상통제 조치는?",["시험절차만 수정","요구사항·설계·시험 항목과 변경 승인 기록을 함께 갱신","결과가 나온 뒤 기준을 재해석","변경 이력을 삭제하고 새 문서만 남김"],1,"추적행렬과 승인 이력을 함께 갱신해야 검증 기준의 변경을 설명할 수 있다."]],"SP-007:1":[["가상 비용안 A: 초기 8억원+연 1.5억원, B: 초기 3억원+연 2.7억원. 5년, 할인율 0이면 TCO는?",["A 15.5억, B 16.5억으로 A가 1억 적음","A 9.5억, B 5.7억","A 16.5억, B 15.5억","둘 모두 15.5억"],0,"A=8+1.5×5=15.5억원, B=3+2.7×5=16.5억원."],["A의 연간 운영비가 2.0억원으로 바뀌면 5년 TCO와 A/B 비교는?",["A 18억원으로 B 16.5억원보다 1.5억원 높음","A 10억원으로 B보다 낮음","운영비는 TCO에서 제외","A와 B 비용은 여전히 동일"],0,"A=8+2×5=18억원. 비용 가정 변화가 우선순위를 뒤집을 수 있다."]],"SP-010:3":[["모델 A 정확도 89%(n=100), B 91%(n=100)이다. B의 우수성을 판단하려면 가장 먼저 무엇을 확인해야 하는가?",["2%p 차이로 바로 확정","같은 시험사례 여부·표본 설계·불확실성·오류 유형","파라미터 수만 비교","B의 오류만 제외"],1,"표본 설계와 짝지어진 시험 여부, 신뢰구간 및 실패유형 확인 없이는 성능 우수성을 확정할 수 없다."],["드문 위험 사례 20건이 평균 지표에 미치는 영향이 작았다. TEV&V 결과 보고는?",["평균 지표에 미미하므로 제외","결과를 보고하지 않음","실패모드·발생조건·심각도를 별도 보고","평균 성능이 합격선 이상이면 별도 위험 분석은 생략"],2,"드문 고위험 실패모드는 평균 지표와 별도로 심각도·빈도·환경을 평가해야 한다."]],"SP-006:6":[["가상의 AI 검색 사업은 정확도와 비용 목표는 충족했으나 데이터 사용권 심사를 통과하지 못했다. Go/No-Go는?",["정확도가 높으면 Go","권리 검증 완료를 선행조건으로 하고 결정 보류","기발생 비용 때문에 Go","문제가 확인되기 전까지 무단 운용"],1,"데이터 사용권은 정량 성능으로 상쇄할 수 없는 선행 승인 조건이다."],["타당성 분석의 핵심 입력을 조금만 바꿔도 순편익 판단이 뒤바뀐다. 보고에 필요한 내용은?",["기준 가정만 보고 확정 Go","민감도 경계·불확실성·조건부 의사결정 제시","효과를 가장 낙관적으로 고정","운영비 변동을 제외"],1,"의사결정이 민감한 가정과 추가 실증 조건을 투명하게 보고해야 한다."]]};
-const shift=(choices,answer,s)=>{let a=Array(4);choices.forEach((v,i)=>a[(i+s)%4]=v);return {choices:a,a:(answer+s)%4}};
-let total=0,custom=0;
-for(const [id,modules] of Object.entries(L)){
-if(modules.length!==6)throw Error('Missing modules '+id);
-for(let i=0;i<6;i++)for(let qi=0;qi<2;qi++){
-const q=modules[i].questions[qi],key=id+':'+(i+1),special=curated[key];
-if(special){const [stem,options,answer,why]=special[qi];Object.assign(q,{q:stem,choices:options,a:answer,why,item_type:'APPLIED_SCENARIO',review_flag:'EXPERT_REVIEW_PENDING'});custom++;}
-else{
-const correct=q.choices[q.a],pool=[];
-for(const d of [1,-1,2,-2,3,-3,4,-4,5,-5]){const other=modules[(i+d+6)%6].questions[qi];let alt=other.choices[other.a];if(alt!==correct&&!pool.includes(alt))pool.push(alt);}
-if(pool.length<3)throw Error('insufficient distractors '+key);
-q.choices=[correct,...pool.slice(0,3)];q.a=0;
-if(qi===0){const topic=D.courses.find(c=>c.id===id).modules[i].title;q.q='「'+topic+'」의 개념·적용 조건을 구분한다. 동일 과목의 다른 개념이나 조치와 비교할 때 이 모듈에 가장 직접적으로 해당하는 설명은?';}
-q.item_type='NEAR_DOMAIN_CHOICE';q.review_flag='EXPERT_REVIEW_PENDING';
+const shift=(choices,answer,s)=>{const out=Array(4);choices.forEach((v,i)=>out[(i+s)%4]=v);return {choices:out,a:(answer+s)%4}};
+let total=0,applied=0,foundation=0;
+const ids=Object.keys(L);
+for(const [ci,id] of ids.entries()){
+ const modules=L[id];if(modules.length!==6)throw Error('Missing modules '+id);
+ for(let i=0;i<6;i++)for(let qi=0;qi<2;qi++){
+  const q=modules[i].questions[qi],key=id+':'+(i+1),special=curated[key],order=ci*12+i*2+qi;
+  if(special){
+   const [stem,options,answer,why]=special[qi];
+   Object.assign(q,{q:stem,choices:options,a:answer,why,item_type:'APPLIED_SCENARIO',review_flag:'EXPERT_REVIEW_PENDING',difficulty:'APPLIED_DRAFT'});
+   applied++;
+  }else{
+   // Keep source-authored question and its original distractors. The 2.3.1
+   // algorithm incorrectly reused other lessons' true answers as distractors.
+   // Restoration resolves that specific structural defect, but does NOT
+   // establish expert validity. These are foundation-level practice drafts.
+   q.item_type='FOUNDATION_RESTORED';
+   q.review_flag='EXPERT_REVIEW_PENDING';
+   q.difficulty='FOUNDATION_DRAFT';
+   foundation++;
+  }
+  const desired=order%4,rot=(desired-q.a+4)%4;
+  Object.assign(q,shift(q.choices,q.a,rot));total++;
+ }
 }
-const order=Object.keys(L).indexOf(id)*12+i*2+qi;
-const m=shift(q.choices,q.a,(order*7+Math.floor(order/4))%4);
-q.choices=m.choices;q.a=m.a;q.difficulty='UPGRADED_DRAFT';total++;
+let diagnostic=0;
+for(const [trackIndex,track] of ['AT','DF','SP'].entries()){
+ const questions=D.diagnostic.filter(q=>q.track===track);
+ if(questions.length!==10)throw Error('Unexpected diagnostic count '+track);
+ for(let i=0;i<questions.length;i++){
+  const q=questions[i],options='ABCD'.split('').map(letter=>q.options[letter]),originalAnswer='ABCD'.indexOf(q.correct);
+  if(originalAnswer<0)throw Error('Missing answer '+q.id);
+  const target=(trackIndex*10+i)%4,rot=(target-originalAnswer+4)%4;
+  const moved=shift(options,originalAnswer,rot);
+  q.options=Object.fromEntries(moved.choices.map((v,k)=>[String.fromCharCode(65+k),v]));
+  q.correct=String.fromCharCode(65+moved.a);
+  q.item_type='FOUNDATION_DIAGNOSTIC_RESTORED';q.difficulty='FOUNDATION_DRAFT';q.status='EXPERT_REVIEW_PENDING';
+  diagnostic++;
+ }
 }
-}
-for(const track of ['AT','DF','SP']){const a=D.diagnostic.filter(q=>q.track===track);
-for(let i=0;i<a.length;i++){const q=a[i],right=q.options[q.correct],pool=[];
-for(const d of [1,-1,2,-2,3,-3,4,-4,5,-5]){const o=a[(i+d+a.length)%a.length],v=o.options[o.correct];if(v!==right&&!pool.includes(v))pool.push(v);}
-if(pool.length<3)throw Error('diagnostic choices');
-const m=shift([right,...pool.slice(0,3)],0,(i*7+track.length)%4);
-q.options=Object.fromEntries(m.choices.map((v,k)=>[String.fromCharCode(65+k),v]));
-q.correct=String.fromCharCode(65+m.a);q.difficulty='REVISED_DRAFT';q.status='EXPERT_REVIEW_PENDING';
-}}
-W.ACADEMY_QUIZ_UPGRADE={moduleQuestions:total,customScenarios:custom,diagnosticQuestions:30,status:'EXPERT_REVIEW_PENDING'};
+W.ACADEMY_QUIZ_UPGRADE={moduleQuestions:total,customScenarios:applied,foundationRestored:foundation,diagnosticQuestions:diagnostic,status:'EXPERT_REVIEW_PENDING'};
 })();

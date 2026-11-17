@@ -31,7 +31,7 @@ jobs:
           gradle-version: '8.13'
       - name: Verify source and backup rules
         run: |
-          for p in app.js module_draft.js quiz_upgrade.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do
+          for p in app.js module_draft.js quiz_upgrade.js quiz_applied_v2_3_3.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do
             node --check "android-army-academy/app/src/main/assets/$p"
           done
           node android-army-academy/qa/backup_test.js
@@ -42,6 +42,8 @@ jobs:
           python3 android-army-academy/qa/content_audit.py
           python3 android-army-academy/qa/content_252_audit.py
           node android-army-academy/qa/quiz_difficulty_test.js
+          node android-army-academy/qa/question_integrity_test.js
+          node android-army-academy/qa/progress_version_gate_test.js
           python3 android-army-academy/qa/educational_quality_gate.py
           python3 android-army-academy/qa/quality_gate.py
           python3 android-army-academy/qa/release_gate.py
@@ -65,7 +67,7 @@ jobs:
       - name: Upload unsigned build for secure local signing
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.3.2-UNSIGNED
+          name: ARMY-AI-ACADEMY-2.3.3-UNSIGNED
           path: dist/
           if-no-files-found: error
           retention-days: 1

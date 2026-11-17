@@ -5,12 +5,12 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const base=path.join(__dirname,'../app/src/main/assets');
 const W={},ctx=vm.createContext({window:W});
-for(const f of ['data_core.js','data_assessment.js','lesson_df001.js','lesson_df_expansion.js','lesson_at_expansion.js','lesson_sp_expansion.js','quiz_upgrade.js']){
+for(const f of ['data_core.js','data_assessment.js','lesson_df001.js','lesson_df_expansion.js','lesson_at_expansion.js','lesson_sp_expansion.js','quiz_upgrade.js','quiz_applied_v2_3_3.js']){
   vm.runInContext(fs.readFileSync(path.join(base,f),'utf8'),ctx,{filename:f});
 }
 const D=W.ACADEMY_DATA,L=W.ACADEMY_LESSONS;
-const headers=['item_id','item_group','track','course_id','course_title','module','module_title','item_no','item_type','review_flag','stem','option_A','option_B','option_C','option_D','correct_letter','correct_text','rationale','reference_url','risk','expert_1_id','expert_1_decision','expert_2_id','expert_2_decision','adjudicator','single_best_answer','distractor_quality','source_verified','job_relevance','approval_decision','review_notes'];
-const rows=[],summ={courses:0,modules:0,module_questions:0,cross_module_true_distractors:0,applied_scenarios:0,diagnostics:0,subject_expert_approved:0};
+const headers=['item_id','item_group','track','course_id','course_title','module','module_title','module_objective','item_no','item_type','review_flag','stem','option_A','option_B','option_C','option_D','correct_letter','correct_text','rationale','reference_url','risk','expert_1_id','expert_1_decision','expert_2_id','expert_2_decision','adjudicator','single_best_answer','distractor_quality','source_verified','job_relevance','approval_decision','review_notes','pilot_n','pilot_difficulty_p','pilot_discrimination_rpb','pilot_distractor_counts'];
+const rows=[],summ={courses:0,modules:0,module_questions:0,foundation_restored:0,applied_scenarios:0,diagnostics:0,subject_expert_approved:0};
 const letter=i=>String.fromCharCode(65+i);
 const courseIndex=new Map(D.courses.map(c=>[c.id,c]));
 summ.courses=courseIndex.size;
@@ -28,13 +28,13 @@ for(const [id,lessons] of Object.entries(L)){
    assert.equal(q.choices.length,4,itemId);
    assert.equal(new Set(q.choices).size,4,itemId);
    assert(Number.isInteger(q.a)&&q.a>=0&&q.a<=3,itemId);
-   if(type==='NEAR_DOMAIN_CHOICE')summ.cross_module_true_distractors++;
+   if(type==='FOUNDATION_RESTORED')summ.foundation_restored++;
    else if(type==='APPLIED_SCENARIO')summ.applied_scenarios++;
    else throw Error('Undocumented generated question type '+type+' '+itemId);
    assert.equal(q.review_flag,'EXPERT_REVIEW_PENDING',itemId);
    const choices=q.choices.slice();
-   const risk=type==='NEAR_DOMAIN_CHOICE'?'HIGH: other modules\u2019 true answers reused as distractors; unique best answer unproven':'MEDIUM: handcrafted scenario, individual key/source review pending';
-   rows.push([itemId,'MODULE',course.track,id,course.name_ko,i+1,mod.title,qi+1,type,q.review_flag,q.q,...choices,letter(q.a),choices[q.a],q.why,lesson.reference_url||'',risk,...Array(11).fill('')]);
+   const risk=type==='FOUNDATION_RESTORED'?'MEDIUM: restored original foundation item; simple distractors, single-best answer and sources not expert verified':'MEDIUM: applied scenario requires two independent subject-matter reviews';
+   rows.push([itemId,'MODULE',course.track,id,course.name_ko,i+1,mod.title,mod.objective,qi+1,type,q.review_flag,q.q,...choices,letter(q.a),choices[q.a],q.why,lesson.reference_url||'',risk,...Array(15).fill('')]);
    summ.module_questions++;
   }
  }
@@ -46,12 +46,12 @@ for(const q of D.diagnostic){
  const choices=['A','B','C','D'].map(k=>q.options[k]);
  assert.equal(new Set(choices).size,4,q.id);
  assert.equal(q.status,'EXPERT_REVIEW_PENDING',q.id);
- rows.push([q.id,'DIAGNOSTIC',q.track,'','','','','', 'DIAGNOSTIC_REWRITTEN',q.status,q.question,...choices,q.correct,q.options[q.correct],q.rationale,'','HIGH: diagnostic score uncalibrated; distractors imported from other true answers',...Array(11).fill('')]);
+ rows.push([q.id,'DIAGNOSTIC',q.track,'','','','','','', 'FOUNDATION_DIAGNOSTIC_RESTORED',q.status,q.question,...choices,q.correct,q.options[q.correct],q.rationale,'','HIGH: original foundation diagnostic restored, score uncalibrated and validity unverified',...Array(15).fill('')]);
  summ.diagnostics++;
 }
 assert.equal(summ.modules,252);assert.equal(summ.module_questions,504);
-assert.equal(summ.cross_module_true_distractors,480);
-assert.equal(summ.applied_scenarios,24);
+assert.equal(summ.foundation_restored,456);
+assert.equal(summ.applied_scenarios,48);
 assert.equal(summ.diagnostics,30);
 assert.equal(rows.length,534);
 for(const r of rows)assert.equal(r.length,headers.length,'Column count mismatch: '+r[0]);
@@ -70,4 +70,4 @@ if(at!==-1){
  fs.writeFileSync(path.join(out,'academy_item_audit_2.3.2.json'),JSON.stringify(summary,null,2)+'\n','utf8');
  console.log('WROTE_REVIEW_INVENTORY '+out);
 }
-console.log('QUESTION_REVIEW_INVENTORY_PASS 534 items (480 cross-module distractors, 24 applied cases, 30 diagnostics). EDUCATIONAL_APPROVAL=NO_GO');
+console.log('QUESTION_REVIEW_INVENTORY_PASS 534 items (456 restored foundation, 48 applied scenarios, 30 restored diagnostics). EDUCATIONAL_APPROVAL=NO_GO');
