@@ -54,6 +54,29 @@ for(let i=0;i<12;i++){
  }
 }
 assert.equal(moduleHours,90,'Specialist lesson-level allocation must cover 90h');
+const sequenceByCourse=new Map();
+for(const w of C.module_allocations){
+ for(const [id,seqs] of Object.entries(w.modules)){
+  const history=sequenceByCourse.get(id)||[];
+  history.push(...seqs.map(seq=>({week:w.week,seq})));
+  sequenceByCourse.set(id,history);
+ }
+}
+let firstExposureChecks=0;
+for(const [id,history] of sequenceByCourse){
+ const distinct=[...new Set(history.map(x=>x.seq))].sort((a,b)=>a-b);
+ const max=distinct[distinct.length-1];
+ assert.deepEqual(distinct,Array.from({length:max},(_,i)=>i+1),
+   'Prerequisite module skipped without approved equivalency: '+id);
+ let prior=0;
+ for(const {seq,week} of history){
+  assert(seq>=prior,'Regressive module sequencing '+id+' week '+week);
+  prior=seq;
+ }
+ firstExposureChecks++;
+}
+assert.equal(firstExposureChecks,28,'Compulsory courses mapped in timetable');
+
 assert.equal(C.outcomes.length,8);
 const ids=new Set(C.outcomes.map(x=>x.id));assert.equal(ids.size,8);
 const assIds=new Set(C.assessments.map(x=>x.id));assert.equal(assIds.size,9);
