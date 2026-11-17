@@ -84,7 +84,7 @@ function renderModuleLesson(){
   for(const s of lesson.sections)html+='<section class="lesson-chapter"><h3>'+esc(s[0])+'</h3><p>'+esc(s[1])+'</p></section>';
   html+='<section class="lesson-example"><h3>🧩 '+esc(lesson.example.heading)+'</h3><ol>'+lesson.example.lines.map(line=>'<li>'+esc(line)+'</li>').join('')+'</ol></section>';
   html+='<section class="lesson-chapter"><h3>직접 해보기</h3><p>'+esc(lesson.task)+'</p><label for="module-practice">내 실습 답변 (30자 이상)</label><textarea id="module-practice" class="reflection-area" maxlength="3000" placeholder="개념, 적용 방법, 주의사항을 직접 작성하세요.">'+esc(e.reflection||'')+'</textarea></section>';
-  html+='<section class="lesson-chapter lesson-quiz"><h3>이해도 확인 · 2문항</h3>'+qs.map((q,qi)=>'<div class="module-question"><p><strong>'+(qi+1)+'. '+esc(q.q)+'</strong></p><div class="module-options">'+q.choices.map((ch,oi)=>'<button type="button" class="module-option '+(moduleChoices[qi]===oi?'selected':'')+'" data-action="module-choice" data-q="'+qi+'" data-option="'+oi+'" aria-pressed="'+(moduleChoices[qi]===oi)+'">'+String.fromCharCode(65+oi)+'. '+esc(ch)+'</button>').join('')+'</div></div>').join('')+'</section>';
+  html+='<section class="lesson-chapter lesson-quiz"><h3>이해도 확인 · 2문항</h3>'+qs.map((q,qi)=>'<div class="module-question"><p><strong>'+(qi+1)+'. '+esc(q.q)+'</strong></p><div class="module-options">'+q.choices.map((ch,oi)=>'<button type="button" class="module-option '+(moduleChoices[qi]===oi?'selected':'')+'" data-action="module-choice" data-q="'+qi+'" data-option="'+oi+'" aria-pressed="'+(moduleChoices[qi]===oi)+'">'+String.fromCharCode(65+oi)+'. '+esc(ch)+'</button>').join('')+'</div>'+(moduleChoices[qi]===undefined?'':'<p class="module-explain '+(moduleChoices[qi]===q.a?'answer-ok':'answer-review')+'">'+(moduleChoices[qi]===q.a?'✓ 정답입니다. ':'다시 확인해 보세요. ')+esc(q.why)+'</p>')+'</div>').join('')+'</section>';
   html+='<div class="lesson-actions"><button class="btn btn-primary" type="button" data-action="module-complete">'+(e.passed?'다시 검증하고 저장':'정답 확인 후 학습 기록 저장')+'</button><button class="btn btn-ghost" data-action="back-to-course" type="button">과목 목록으로</button></div>';
   html+='<p class="microcopy">두 문항 모두 정답이고 본인 작성 답변이 30자 이상이어야 학습 근거가 저장됩니다. 자동 채점은 기초 이해도 확인용이며 공식 이수가 아닙니다.</p>';
  }
@@ -133,8 +133,10 @@ function sanitizeBackup(input){
  if(b.lessonEvidence&&typeof b.lessonEvidence==='object'&&!Array.isArray(b.lessonEvidence)){
   for(const [k,v] of Object.entries(b.lessonEvidence)){
    const match=/^(AT|DF|SP)-\d{3}:[1-6]$/.test(k)&&ids.has(k.split(':')[0]);
-   if(match&&v&&typeof v==='object'&&v.passed===true&&typeof v.reflection==='string'&&v.reflection.trim().length>=30){
-    clean.lessonEvidence[k]={passed:true,reflection:v.reflection.slice(0,3000),at:typeof v.at==='string'?v.at.slice(0,40):'',version:'2.0.2'};
+   if(match&&v&&typeof v==='object'&&typeof v.reflection==='string'){
+    const reflection=v.reflection.slice(0,3000);
+    const passed=v.passed===true&&reflection.trim().length>=30;
+    clean.lessonEvidence[k]={passed,reflection,at:typeof v.at==='string'?v.at.slice(0,40):'',version:'2.0.3'};
    }
   }
  }
