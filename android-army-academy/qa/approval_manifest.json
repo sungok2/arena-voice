@@ -24,7 +24,11 @@
     "no_verified_instructional_institution_authority",
     "no_pilot_or_reliability_estimates",
     "no_independent_summative_exam_bank",
-    "no_production_education_record_system"
+    "no_production_education_record_system",
+    "2027_rule_sunset_must_be_revalidated_at_approval",
+    "independent_exam_capacity_and_staffing_unknown",
+    "instructor_validity_of_90_hour_sequence_pending",
+    "252_lesson_source_clause_checks_not_completed"
   ],
   "review_inventory": {
     "module_items": 504,
@@ -50,7 +54,17 @@
     "instructor_approval": "PENDING",
     "military_security_approval": "PENDING",
     "candidate_is_not_course_authorization": true,
-    "informal_app_progress_is_not_credential": true
+    "informal_app_progress_is_not_credential": true,
+    "version": "2.4.1",
+    "policy_validity_check": "2027-06-01 PUBLIC_RULE_SUNSET_REVALIDATE_WITH_INSTITUTION",
+    "module_sequence_review": "28_COURSES_CONTIGUOUS_FIRST_EXPOSURES_PENDING_INSTRUCTOR",
+    "public_practicum_example": {
+      "case_id": "PE02-SYNTHETIC-IDENTITY-001",
+      "technical_verification": "AUTOMATED_REGRESSION_TEST",
+      "teaching_review": "PENDING"
+    },
+    "independent_summative_exam_bank": "NOT_AVAILABLE_PUBLIC_APP_FORMATIVE_ONLY",
+    "exam_cohort_staffing": "NOT_DEFINED"
   },
   "gates": {
     "G0": "REQUIRES_CI_RESULT",
@@ -70,5 +84,17 @@
     "pilot_learner_outcomes",
     "information_security_and_data_rights",
     "final_authority_order"
-  ]
+  ],
+  "training_material_review": {
+    "modules_total": 252,
+    "modules_expert_approved": 0,
+    "formative_question_items_total": 534,
+    "question_items_expert_approved": 0,
+    "synthetic_lab_candidates_total": 15,
+    "synthetic_labs_instructor_approved": 0,
+    "mapped_professional_hours_total": 90,
+    "instructor_approved_mapped_hours": 0,
+    "public_synthetic_case_examples": 1,
+    "private_summative_exam_items_approved": 0
+  }
 }
