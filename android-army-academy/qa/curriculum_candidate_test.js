@@ -77,7 +77,11 @@ for(const [id,history] of sequenceByCourse){
 }
 assert.equal(firstExposureChecks,28,'Compulsory courses mapped in timetable');
 
-assert.equal(C.version,'2.4.1');
+assert.equal(C.version,'2.5.0');
+assert.equal(C.formative_practica.count,6);
+assert.equal(C.formative_practica.status,'PUBLIC_SYNTHETIC_DRAFT_NOT_APPROVED_FOR_OFFICIAL_SCORING');
+assert.equal(C.formative_practica.score_role.startsWith('NONE'),true);
+assert.equal(C.formative_practica.assessment_ids.join(','),'PE01,PE02,PE03,PE04,PE05,PE06');
 assert.equal(C.policy_validity_check.visible_sunset_on_current_version,'2027-06-01');
 assert.equal(C.policy_validity_check.approval_status,'PENDING_INSTITUTIONAL_REVALIDATION');
 assert.equal(C.independent_exam_capacity.status,'PENDING_COHORT_STAFFING');

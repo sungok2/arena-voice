@@ -107,3 +107,7 @@ PLO별 실습 참여·완료와 유효 증거 수: [미측정]
 - `qa/question_bank_review_export.js` 534문항 전문가 검토대장
 - `qa/curriculum_candidate_test.js` 주차·시간·점수 정합성 자동 검증
 - `qa/approval_manifest.json` 증거/서명 보류상태 및 승인 게이트
+
+## 11. v2.5.0 공개 실습 인계
+`PERFORMANCE_ASSESSMENT_PRACTICUM_GUIDE.md`에서 PE01~06 시나리오·오류 반례·재현 과제를 인수한다. `CAPSTONE_ORAL_DEFENSE_EXERCISE.md`의 10주 8h·11주 10h·12주 10h=28h 수행활동을 CAP-01~CAP-09 증거로 확인한다. 실제 점수와 학습자의 신원은 승인된 별도 시스템에만 기록하며 전문 교관·평가자 독립 검증이 선행돼야 한다.
+

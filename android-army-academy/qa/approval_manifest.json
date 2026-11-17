@@ -1,5 +1,5 @@
 {
-  "version": "2.4.1-curriculum-candidate",
+  "version": "2.5.0-curriculum-candidate",
   "status": "NOT_APPROVED_PENDING_INDEPENDENT_REVIEW",
   "courses": 42,
   "modules": 252,
@@ -28,7 +28,9 @@
     "2027_rule_sunset_must_be_revalidated_at_approval",
     "independent_exam_capacity_and_staffing_unknown",
     "instructor_validity_of_90_hour_sequence_pending",
-    "252_lesson_source_clause_checks_not_completed"
+    "252_lesson_source_clause_checks_not_completed",
+    "6_public_performance_case_answer_keys_not_valid_for_official_exam",
+    "capstone_oral_assessor_calibration_and_cohort_capacity_not_proven"
   ],
   "review_inventory": {
     "module_items": 504,
@@ -55,7 +57,7 @@
     "military_security_approval": "PENDING",
     "candidate_is_not_course_authorization": true,
     "informal_app_progress_is_not_credential": true,
-    "version": "2.4.1",
+    "version": "2.5.0",
     "policy_validity_check": "2027-06-01 PUBLIC_RULE_SUNSET_REVALIDATE_WITH_INSTITUTION",
     "module_sequence_review": "28_COURSES_CONTIGUOUS_FIRST_EXPOSURES_PENDING_INSTRUCTOR",
     "public_practicum_example": {
@@ -64,7 +66,14 @@
       "teaching_review": "PENDING"
     },
     "independent_summative_exam_bank": "NOT_AVAILABLE_PUBLIC_APP_FORMATIVE_ONLY",
-    "exam_cohort_staffing": "NOT_DEFINED"
+    "exam_cohort_staffing": "NOT_DEFINED",
+    "public_practica": {
+      "count": 6,
+      "status": "PUBLIC_FORMATIVE_ONLY",
+      "expert_approved": 0,
+      "formal_assessment_bank_items": 0,
+      "student_app_excludes_answer_keys": true
+    }
   },
   "gates": {
     "G0": "REQUIRES_CI_RESULT",
@@ -95,6 +104,10 @@
     "mapped_professional_hours_total": 90,
     "instructor_approved_mapped_hours": 0,
     "public_synthetic_case_examples": 1,
-    "private_summative_exam_items_approved": 0
+    "private_summative_exam_items_approved": 0,
+    "public_synthetic_performance_practice_cases": 6,
+    "performance_practice_cases_with_recomputed_reference": 6,
+    "performance_practice_approved_for_official_use": 0,
+    "capstone_artifact_templates": 9
   }
 }

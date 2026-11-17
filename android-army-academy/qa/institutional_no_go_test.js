@@ -6,9 +6,14 @@ const m=JSON.parse(fs.readFileSync(path.join(__dirname,'approval_manifest.json')
 const w={},ctx=vm.createContext({window:w});
 vm.runInContext(fs.readFileSync(path.join(root,'app/src/main/assets/official_curriculum.js'),'utf8'),ctx);
 const c=w.ACADEMY_OFFICIAL_CANDIDATE;
-assert.equal(m.version,'2.4.1-curriculum-candidate');
+assert.equal(m.version,'2.5.0-curriculum-candidate');
 assert.equal(m.status,'NOT_APPROVED_PENDING_INDEPENDENT_REVIEW');
-assert.equal(c.version,'2.4.1');
+assert.equal(c.version,'2.5.0');
+assert.equal(m.training_material_review.public_synthetic_performance_practice_cases,6);
+assert.equal(m.training_material_review.performance_practice_approved_for_official_use,0);
+assert.equal(m.curriculum.public_practica.expert_approved,0);
+assert.equal(m.curriculum.public_practica.formal_assessment_bank_items,0);
+assert.equal(m.curriculum.public_practica.student_app_excludes_answer_keys,true);
 assert.equal(c.approval_status,'CURRICULUM_CANDIDATE_NOT_OFFICIALLY_AUTHORIZED');
 assert.equal(c.completion_policy.status,'PROPOSED_THRESHOLDS_NOT_INSTITUTIONALLY_AUTHORIZED');
 assert.equal(c.policy_validity_check.approval_status,'PENDING_INSTITUTIONAL_REVALIDATION');

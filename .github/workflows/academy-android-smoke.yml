@@ -55,7 +55,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.4.1-EMULATOR-SMOKE-EVIDENCE
+          name: ARMY-AI-ACADEMY-2.5.0-EMULATOR-SMOKE-EVIDENCE
           path: smoke-evidence/
           if-no-files-found: warn
           retention-days: 7

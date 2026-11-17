@@ -1,0 +1,87 @@
+{
+  "classification": "PUBLIC_SYNTHETIC_TRAINING_ONLY",
+  "approval_status": "INSTRUCTIONAL_DRAFT_NOT_APPROVED_FOR_OFFICIAL_SCORING",
+  "license": "Project-authored synthetic educational case; permitted for public practice",
+  "examination_note": "The input and answer key are public. Prohibited for official supervised exam or credentialing; subject-matter and assessor validation pending",
+  "max_points": 5,
+  "rubric": {
+    "accuracy": 2,
+    "reproducibility": 1,
+    "authorization_and_safety": 1,
+    "limitations_and_reporting": 1
+  },
+  "id": "PE05",
+  "assessment_id": "PE05",
+  "title": "사업기획: 비AI 대안·5년 단순비용·데이터 이용권",
+  "week": 10,
+  "plo": [
+    "PLO01",
+    "PLO07"
+  ],
+  "prerequisites": [
+    "SP-005",
+    "SP-007"
+  ],
+  "teaching_minutes_proposed": 65,
+  "task": "합성 후보 A/B/C의 5년 단순 총비용을 계산하고, 사용권 및 업무처리 목표를 둘 다 만족하는 최저비용 방안을 선택하라. 조건과 빠진 비용을 명시하고 숫자를 실제 군 예산·사업 효과로 주장하지 않는다.",
+  "currency_unit": "million KRW, entirely synthetic values",
+  "evaluation_years": 5,
+  "discount_rate_assumed": 0,
+  "hard_requirements": {
+    "licensed_for_training": true,
+    "max_mean_processing_seconds": 120
+  },
+  "options": [
+    {
+      "id": "AI-ONPREM",
+      "kind": "AI",
+      "capex": 600,
+      "annual_opex": 100,
+      "license_allows_training": true,
+      "mean_processing_seconds": 70
+    },
+    {
+      "id": "AI-SAAS",
+      "kind": "AI",
+      "capex": 100,
+      "annual_opex": 190,
+      "license_allows_training": false,
+      "mean_processing_seconds": 60
+    },
+    {
+      "id": "RULES",
+      "kind": "NON_AI",
+      "capex": 250,
+      "annual_opex": 110,
+      "license_allows_training": true,
+      "mean_processing_seconds": 100
+    }
+  ],
+  "cost_formula": "capex + annual_opex * 5 (no discounting, residual, migration, personnel, risk costs: simplified)",
+  "instructor_reference": {
+    "costs_by_id": {
+      "AI-ONPREM": 1100,
+      "AI-SAAS": 1050,
+      "RULES": 800
+    },
+    "eligible_ids": [
+      "AI-ONPREM",
+      "RULES"
+    ],
+    "selected": "RULES",
+    "savings_vs_ai_onprem": 300,
+    "reason": "Safer licensed and meets response constraint; AI not necessary under scenario assumptions"
+  },
+  "expected_evidence": [
+    "정량 비용표와 단위·기간",
+    "비AI 대안 비교",
+    "라이선스 목적 제한·하드 게이트",
+    "비용 누락·민감도·TCO 과잉주장 방지"
+  ],
+  "pitfalls": [
+    "AI 옵션만 비교하여 비AI 대안 누락",
+    "서면 목적상 금지된 학습용 데이터 사용",
+    "단순비용 합계를 실제 완전 TCO라 오기"
+  ],
+  "methodological_reference": "https://airc.nist.gov/airmf-resources/playbook/manage/"
+}
