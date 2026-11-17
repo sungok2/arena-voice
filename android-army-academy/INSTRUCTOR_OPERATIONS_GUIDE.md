@@ -96,6 +96,10 @@ PLO별 실습 참여·완료와 유효 증거 수: [미측정]
 최종 판단: [NO-GO / 조건부 재검토 / 기관 승인]
 ```
 
+
+## 10. 차시별 수업 승인(추가)
+`qa/curriculum_dossier_export.js`가 출력하는 `specialist_lesson_session_matrix.csv`의 90개 차시를 전공 교관이 각각 확인한다. 과목별 목표-차시-시간 배정·실습·평가자료가 부합하지 않으면 해당 차시는 승인 전으로 유지한다. 중복 편성 모듈은 추가 실습인지 중복 수업인지 명시한다. 원고 승인 후 변경은 버전과 사유를 남긴다.
+
 ## 9. 필수 인계 파일
 - `CURRICULUM_APPROVAL_CANDIDATE_2027.md` 정규교육 계획서
 - `official_curriculum.js` PLO·주차·평가 루브릭 기계가독형 기준
