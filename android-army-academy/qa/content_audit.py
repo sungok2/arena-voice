@@ -30,7 +30,9 @@ assert len(a['diagnostic'])==30 and len(a['questions'])==210
 assert all(sum(q['course_id']==c['id'] for q in a['questions'])==5 for c in c['courses'])
 assert len(p['recommended']['weeks'])==12
 assert p['recommended']['total_hours']==144
-assert p['recommended']['track_hours']=={'AT':30,'DF':30,'SP':30}
+assert p['recommended']['track_hours']=={'AT':31,'DF':30,'SP':29}
+assert sum(p['recommended']['track_hours'].values())==p['recommended']['personal_hours'] if 'personal_hours' in p['recommended'] else sum(p['recommended']['track_hours'].values())==90
+assert {t:sum(sum(w[t].values()) for w in p['recommended']['weeks']) for t in ('AT','DF','SP')}=={'AT':31,'DF':30,'SP':29}
 assert all(sum(w[k] for k in ('common','personal','capstone','assessment'))==12 for w in p['recommended']['weeks'])
 print('OFFLINE_CONTENT_QA_PASS courses=42 modules=252 diagnostic=30 reflections=210 plan=12 weeks 144h')
 lessons=data('lesson_df001.js','window.ACADEMY_LESSONS=')

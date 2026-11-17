@@ -1,5 +1,5 @@
 {
-  "version": "2.3.3-qa",
+  "version": "2.4.0-curriculum-candidate",
   "status": "NOT_APPROVED_PENDING_INDEPENDENT_REVIEW",
   "courses": 42,
   "modules": 252,
@@ -20,7 +20,11 @@
     "unfinished_draft_not_crash_persistent",
     "534_items_independent_key_source_review_pending",
     "456_foundation_distractors_not_psychometrically_calibrated",
-    "30_diagnostic_scores_not_normed"
+    "30_diagnostic_scores_not_normed",
+    "no_verified_instructional_institution_authority",
+    "no_pilot_or_reliability_estimates",
+    "no_independent_summative_exam_bank",
+    "no_production_education_record_system"
   ],
   "review_inventory": {
     "module_items": 504,
@@ -28,5 +32,43 @@
     "applied_items": 48,
     "diagnostic_items": 30,
     "independently_reviewed": 0
-  }
+  },
+  "curriculum": {
+    "program_id": "ARMY-AI-EXCELLENCE-ACADEMY-CANDIDATE-2027",
+    "status": "CURRICULUM_CANDIDATE_NOT_OFFICIALLY_AUTHORIZED",
+    "weeks": 12,
+    "planned_hours": 144,
+    "specialist_hours": {
+      "AT": 31,
+      "DF": 30,
+      "SP": 29
+    },
+    "outcomes": 8,
+    "program_assessments": 9,
+    "proposed_grade_max": 100,
+    "governing_authority": "TO_BE_CONFIRMED_BY_ELIGIBLE_MILITARY_EDUCATION_INSTITUTION",
+    "instructor_approval": "PENDING",
+    "military_security_approval": "PENDING",
+    "candidate_is_not_course_authorization": true,
+    "informal_app_progress_is_not_credential": true
+  },
+  "gates": {
+    "G0": "REQUIRES_CI_RESULT",
+    "G1": "PENDING",
+    "G2": "PENDING",
+    "G3": "PENDING",
+    "G4": "PENDING",
+    "G5": "PENDING",
+    "G6": "PENDING"
+  },
+  "review_requirements": [
+    "independent_curriculum_approval",
+    "instructor_qualification",
+    "lesson_source_validation",
+    "assessment_bank_validity",
+    "performance_rater_calibration",
+    "pilot_learner_outcomes",
+    "information_security_and_data_rights",
+    "final_authority_order"
+  ]
 }
