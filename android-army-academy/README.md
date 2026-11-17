@@ -1,4 +1,4 @@
-# ARMY AI EXCELLENCE ACADEMY v2.4.0 — 2027 curriculum approval candidate
+# ARMY AI EXCELLENCE ACADEMY v2.4.1 — 2027 curriculum approval candidate
 
 **Status: NOT OFFICIALLY APPROVED.** This repository is a public/synthetic curriculum-proposal and offline learner-app implementation. It is NOT an approved Republic of Korea Army course, a sanctioned grading platform, or a certificate issuer.
 
@@ -35,3 +35,13 @@
 The governing training institution, latest military education regulation and applicable training-command procedures must define: target student admission, approved syllabus, instructional-hour accounting, instructor credentialing, independent examination security, score validity and appeal process, approved devices/networks, security review, record retention, and official issuance. None may be inferred from public external standards or the presence of APK artifacts.
 
 Refer to [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) and [PRIVACY_OFFLINE.md](PRIVACY_OFFLINE.md) for remaining software controls.
+
+
+## v2.4.1 readiness and teacher evidence
+- [EDUCATION_VALIDATION_MASTER_PLAN_2027.md](EDUCATION_VALIDATION_MASTER_PLAN_2027.md): G1–G6 approval evidence and 2027 regulatory sunset revalidation.
+- [training_cases/PE02_INSTRUCTOR_LESSON_PLAN.md](training_cases/PE02_INSTRUCTOR_LESSON_PLAN.md): 60-minute synthetic data fusion exemplar, not an official exam.
+- `qa/instructional_evidence_audit.js`: CSV inventory for all 252 lessons and 15 labs; reports zero instructor/expert approval rather than inventing it.
+- `qa/synthetic_practicum_test.js`: recomputes asset identity mapping, deduplication, orphan and UTC outcomes from public-only fixture.
+- `qa/institutional_no_go_test.js`: blocks misrepresentation of missing accreditation and examination evidence.
+- First-exposure module prerequisites corrected for 10 scheduled courses. Any waiver must be separately evidenced by the governing institution.
+- Production-grade institutional learner records, instructor signoff, independent exam, pilot evaluation and official authorization remain missing.
