@@ -15,7 +15,7 @@ for(const [key,items] of Object.entries(cases)){
   if(!Array.isArray(choices)||choices.length!==4||new Set(choices).size!==4||!Number.isInteger(answer)||answer<0||answer>=4)throw Error('Invalid curated question '+key);
   const position=ci*12+(sequence-1)*2+qi,target=position%4;
   const moved=shift(choices,answer,(target-answer+4)%4);
-  Object.assign(lesson.questions[qi],{q:stem,choices:moved.choices,a:moved.a,why,item_type:'APPLIED_SCENARIO',difficulty:'APPLIED_DRAFT',review_flag:'EXPERT_REVIEW_PENDING',provenance:'2.3.3_HAND_AUTHORED_SYNTHETIC'});
+  Object.assign(lesson.questions[qi],{q:stem,choices:moved.choices,a:moved.a,why,item_type:'APPLIED_SCENARIO',difficulty:'APPLIED_DRAFT',review_flag:'EXPERT_REVIEW_PENDING',provenance:'2.3.3_EDITORIAL_SYNTHETIC_DRAFT'});
   n++;
  }
 }
