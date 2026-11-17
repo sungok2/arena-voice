@@ -46,6 +46,7 @@ jobs:
           node android-army-academy/qa/practical_lab_test.js
           python3 android-army-academy/qa/content_audit.py
           python3 android-army-academy/qa/content_252_audit.py
+          node android-army-academy/qa/quiz_difficulty_test.js
           python3 android-army-academy/qa/educational_quality_gate.py
           python3 android-army-academy/qa/quality_gate.py
           python3 android-army-academy/qa/release_gate.py

@@ -50,3 +50,6 @@ for f in js_files[:-1]:
  if f.endswith('.js'):
   subprocess.run(['node','--check',str(base/f)],check=True,stdout=subprocess.PIPE)
 print('JS_SYNTAX_PASS')
+# Advanced assessment checks: load the independent overlay and inspect all options.
+import subprocess
+subprocess.run(['node',str(Path(__file__).parent/'quiz_difficulty_test.js')],check=True)
