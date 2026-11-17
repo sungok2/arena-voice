@@ -35,4 +35,10 @@ assert(app.includes("const id=t.dataset.practice;"),'Export uses DOM button data
 assert(app.includes("if(act==='export-public-practice')"));
 assert(app.includes('FORMATIVE')||app.includes('공식 성적/수료 인증 불가'));
 assert(!app.includes("target.dataset.practice"),'Invalid action binding');
+assert(index.includes('id="capstone-evidence-catalog"'));
+assert(index.includes('<h2>14개 자체 점검 항목</h2>'));
+assert(app.includes('function renderCapstoneEvidence('));
+assert(app.includes('renderCapstoneEvidence();'));
+assert.equal((app.match(/\['CAP-0[1-9]'/g)||[]).length,9,'Nine capstone evidence labels required');
+
 console.log('OFFLINE_PRACTICA_BUNDLE_PASS: 6 independently matched synthetic cases, no educator benchmark fields in learner asset, export action bound');
