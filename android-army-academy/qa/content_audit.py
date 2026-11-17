@@ -5,7 +5,7 @@ import json,re,sys
 root=Path(__file__).resolve().parents[1]/'app'/'src'/'main'/'assets'
 if not root.is_dir():
     root=Path(__file__).resolve().parents[1]/'assets'
-files=[root/x for x in ('index.html','styles.css','app.js','data_core.js','data_assessment.js','data_plan.js','lesson_df001.js')]
+files=[root/x for x in ('index.html','styles.css','app.js','data_core.js','data_assessment.js','data_plan.js','lesson_df001.js','lesson_df_expansion.js')]
 assert all(x.is_file() for x in files),[str(x) for x in files if not x.is_file()]
 html=files[0].read_text(encoding='utf-8')
 assert all(f'src="{p.name}"' in html or f'href="{p.name}"' in html for p in files[1:]),'missing asset script/style references'
@@ -39,3 +39,19 @@ assert 'data-action="open-module"' in (root/'app.js').read_text()
 assert 'data-course-module' not in (root/'app.js').read_text(), 'Legacy checkbox should be removed'
 assert 'lessonEvidence' in (root/'app.js').read_text()
 print('INTERACTIVE_LESSON_QA_PASS DF001=6 modules / 12 quiz questions')
+
+# 13 newly authored Data Fusion courses / 78 modules and 156 topical quiz checks.
+s=(root/'lesson_df_expansion.js').read_text(encoding='utf-8').strip()
+prefix='Object.assign(window.ACADEMY_LESSONS,'
+assert s.startswith(prefix) and s.endswith(');')
+import json
+exp=json.loads(s[len(prefix):-2])
+assert sorted(exp)==[f'DF-{i:03d}' for i in range(2,15)]
+assert all(len(v)==6 for v in exp.values())
+for course,modules in exp.items():
+    for module in modules:
+        assert len(module['sections'])>=3
+        assert len(module['example']['lines'])>=3
+        assert len(module['questions'])==2
+        assert all(len(q['choices'])==4 and len(set(q['choices']))==4 and 0<=q['a']<4 for q in module['questions'])
+print('DATA_FUSION_LESSON_QA_PASS courses=14 modules=84 quiz=168 (including DF-001)')

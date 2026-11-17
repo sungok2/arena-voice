@@ -31,7 +31,7 @@ jobs:
           gradle-version: '8.13'
       - name: Verify source and backup rules
         run: |
-          for p in app.js data_core.js data_assessment.js data_plan.js lesson_df001.js; do
+          for p in app.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js; do
             node --check "android-army-academy/app/src/main/assets/$p"
           done
           node android-army-academy/qa/backup_test.js
@@ -58,7 +58,7 @@ jobs:
       - name: Upload unsigned build for secure local signing
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.0.3-UNSIGNED
+          name: ARMY-AI-ACADEMY-2.1.0-UNSIGNED
           path: dist/
           if-no-files-found: error
           retention-days: 1

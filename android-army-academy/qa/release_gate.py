@@ -12,7 +12,7 @@ assert 'android.permission.INTERNET' not in manifest
 assert 'android.permission.READ_EXTERNAL_STORAGE' not in manifest
 assert 'android.permission.MANAGE_EXTERNAL_STORAGE' not in manifest
 assert 'minSdk 26' in gradle and 'targetSdk 36' in gradle
-assert 'versionCode 8' in gradle and "versionName '2.0.3'" in gradle
+assert 'versionCode 9' in gradle and "versionName '2.1.0'" in gradle
 assert 'signingConfigs.debug' not in gradle,'Production release must NEVER fall back to debug signing'
 assert 'if (persistentStore) signingConfig signingConfigs.production' in gradle
 assert 'WebView.setWebContentsDebuggingEnabled(false)' in java

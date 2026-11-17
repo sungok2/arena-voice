@@ -1,4 +1,4 @@
-# ARMY AI EXCELLENCE ACADEMY — 2.0.1 distribution builds
+# ARMY AI EXCELLENCE ACADEMY — 2.1.0 distribution builds
 
 The source is a 100% offline educational Android WebView app.
 - applicationId: `com.sungok2.armyaiacademy`
