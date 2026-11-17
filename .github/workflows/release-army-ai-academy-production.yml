@@ -40,8 +40,10 @@ jobs:
           echo "ACADEMY_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/academy-release.p12" >> "$GITHUB_ENV"
       - name: Verify course data and backup restore
         run: |
-          for p in app.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do node --check "android-army-academy/app/src/main/assets/$p"; done
+          for p in app.js module_draft.js quiz_upgrade.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do node --check "android-army-academy/app/src/main/assets/$p"; done
           node android-army-academy/qa/backup_test.js
+          node android-army-academy/qa/module_draft_test.js
+          node android-army-academy/qa/question_bank_review_export.js --out review-artifacts
           node android-army-academy/qa/lesson_reader_test.js
           node android-army-academy/qa/practical_lab_test.js
           python3 android-army-academy/qa/content_audit.py
@@ -75,7 +77,7 @@ jobs:
           sha256sum "$APK" "$AAB"
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.3.1-PRODUCTION-SIGNED
+          name: ARMY-AI-ACADEMY-2.3.2-PRODUCTION-SIGNED
           path: |
             android-army-academy/app/build/outputs/apk/release/app-release.apk
             android-army-academy/app/build/outputs/bundle/release/app-release.aab
