@@ -5,7 +5,7 @@ const base=path.join(__dirname,'../app/src/main/assets'),ctx={window:{}};vm.crea
 for(const f of ['data_core.js','data_plan.js','official_curriculum.js'])vm.runInContext(fs.readFileSync(path.join(base,f),'utf8'),ctx,{filename:f});
 const D=ctx.window.ACADEMY_DATA,C=ctx.window.ACADEMY_OFFICIAL_CANDIDATE;
 if(C.approval_status!=='CURRICULUM_CANDIDATE_NOT_OFFICIALLY_AUTHORIZED')throw Error('Do not export a fake approval');
-const out=process.argv[process.argv.indexOf('--out')+1]||path.join(__dirname,'../curriculum-review');
+const outIndex=process.argv.indexOf('--out');const out=outIndex===-1?path.join(__dirname,'../curriculum-review'):process.argv[outIndex+1];assert(out&& !out.startsWith('--'),'--out requires a directory');
 fs.mkdirSync(out,{recursive:true});
 function csv(name,head,rows){
  const cell=v=>{let s=String(v??'');if(/^[=+@\-\t]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
