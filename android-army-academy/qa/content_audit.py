@@ -5,7 +5,7 @@ import json,re,sys
 root=Path(__file__).resolve().parents[1]/'app'/'src'/'main'/'assets'
 if not root.is_dir():
     root=Path(__file__).resolve().parents[1]/'assets'
-files=[root/x for x in ('index.html','styles.css','app.js','data_core.js','data_assessment.js','data_plan.js')]
+files=[root/x for x in ('index.html','styles.css','app.js','data_core.js','data_assessment.js','data_plan.js','lesson_df001.js')]
 assert all(x.is_file() for x in files),[str(x) for x in files if not x.is_file()]
 html=files[0].read_text(encoding='utf-8')
 assert all(f'src="{p.name}"' in html or f'href="{p.name}"' in html for p in files[1:]),'missing asset script/style references'
@@ -33,3 +33,9 @@ assert p['recommended']['total_hours']==144
 assert p['recommended']['track_hours']=={'AT':30,'DF':30,'SP':30}
 assert all(sum(w[k] for k in ('common','personal','capstone','assessment'))==12 for w in p['recommended']['weeks'])
 print('OFFLINE_CONTENT_QA_PASS courses=42 modules=252 diagnostic=30 reflections=210 plan=12 weeks 144h')
+lessons=data('lesson_df001.js','window.ACADEMY_LESSONS=')
+assert len(lessons['DF-001'])==6 and all(len(x['sections'])>=3 and len(x['questions'])==2 for x in lessons['DF-001'])
+assert 'data-action="open-module"' in (root/'app.js').read_text()
+assert 'data-course-module' not in (root/'app.js').read_text(), 'Legacy checkbox should be removed'
+assert 'lessonEvidence' in (root/'app.js').read_text()
+print('INTERACTIVE_LESSON_QA_PASS DF001=6 modules / 12 quiz questions')
