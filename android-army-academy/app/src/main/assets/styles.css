@@ -37,3 +37,13 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
 @media(max-width:450px){.module-open{align-items:flex-start;gap:9px}.module-state{max-width:80px;font-size:.65rem}.lesson-chapter p{font-size:.87rem}.lesson-actions button{width:100%}}
 
 .source-line{border:1px solid #385e71;border-radius:10px;padding:12px;margin:14px 0;overflow-wrap:anywhere;font-size:.75rem;line-height:1.75;color:#c5dce8;background:#0e2735}.source-line strong{color:#9be7d8}
+/* review candidate: synthetic performance task form controls */
+.pilot-lab{background:#122d3f;border:1px solid #477d85;border-radius:14px;padding:18px;margin:20px 0}
+.pilot-lab .eyebrow{color:#88efdb}.pilot-lab h3{color:#fff;margin:6px 0 13px}
+.lab-instructions{background:#0d2435;border-radius:9px;padding:12px;margin:12px 0}
+.lab-instructions b{font-size:.79rem;color:#d2fff1}.lab-instructions p{font-size:.78rem;margin:5px 0 11px;line-height:1.6}
+.lab-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.lab-field{display:flex;flex-direction:column;gap:7px;font-size:.82rem;color:#eefbff}
+.lab-field input,.lab-field select{background:#0b2033;color:#fff;border:1px solid #608999;border-radius:9px;min-height:48px;padding:10px;min-width:0;width:100%}
+.lab-field input:focus-visible,.lab-field select:focus-visible{outline:3px solid #8ffff0}
+@media(max-width:470px){.lab-fields{grid-template-columns:1fr}}
