@@ -34,3 +34,8 @@ DRAFT → AUTOMATED_STRUCTURE_QA → FACT_CHECKED → INSTRUCTIONAL_REVIEWED →
 - https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence
 - https://www.iso.org/standard/35736.html
 - https://www.opm.gov/policy-data-oversight/training-and-development/reference-materials/training_evaluation/
+
+## 2.3 RC3 addendum
+- 과목별 252개 모듈의 학습목표를 반복형 일반 문장 대신 개별 합성 수행과제에 연결하여 표시
+- 각 모듈에 AI 기술/데이터 융합/정책 사업기획 전공별 4항목 자기점검 지침 추가
+- 형성평가와 승인용 수행평가 구분, 모든 강의는 교육용 초안 유지
