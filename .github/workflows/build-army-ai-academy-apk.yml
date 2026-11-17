@@ -46,6 +46,9 @@ jobs:
           node android-army-academy/qa/question_integrity_test.js
           node android-army-academy/qa/progress_version_gate_test.js
           node android-army-academy/qa/curriculum_candidate_test.js
+          node android-army-academy/qa/instructional_evidence_audit.js --out instructional-evidence-artifacts
+          node android-army-academy/qa/synthetic_practicum_test.js
+          node android-army-academy/qa/institutional_no_go_test.js
           node android-army-academy/qa/curriculum_dossier_export.js --out curriculum-review-artifacts
           bash android-army-academy/qa/emulator_smoke.sh --self-test
           python3 android-army-academy/qa/educational_quality_gate.py
@@ -53,14 +56,20 @@ jobs:
           python3 android-army-academy/qa/release_gate.py
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.4.0-EXPERT-REVIEW-INVENTORY
+          name: ARMY-AI-ACADEMY-2.4.1-EXPERT-REVIEW-INVENTORY
           path: review-artifacts/
           retention-days: 30
           if-no-files-found: error
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.4.0-CURRICULUM-REVIEW-DOSSIER
+          name: ARMY-AI-ACADEMY-2.4.1-CURRICULUM-REVIEW-DOSSIER
           path: curriculum-review-artifacts/
+          retention-days: 30
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v6
+        with:
+          name: ARMY-AI-ACADEMY-2.4.1-INSTRUCTIONAL-EVIDENCE-REGISTER
+          path: instructional-evidence-artifacts/
           retention-days: 30
           if-no-files-found: error
       - name: Lint and debug build
@@ -68,7 +77,7 @@ jobs:
         run: gradle :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.4.0-DEBUG-ONLY-DO-NOT-DISTRIBUTE
+          name: ARMY-AI-ACADEMY-2.4.1-DEBUG-ONLY-DO-NOT-DISTRIBUTE
           path: android-army-academy/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 7
           if-no-files-found: error

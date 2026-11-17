@@ -1,0 +1,132 @@
+{
+  "case_id": "PE02-SYNTHETIC-IDENTITY-001",
+  "version": "1.0",
+  "classification": "PUBLIC_SYNTHETIC_TRAINING_ONLY",
+  "purpose": "이기종 원천의 장비 식별자, 중복 이벤트, 고아 레코드, 시간대 차이를 안전하게 통합한다.",
+  "source_note": "전부 가상으로 생성된 식별자·시간·기관명. 실 군 장비 데이터가 아님.",
+  "license": "프로젝트 자체 작성 합성 사례, 수업용 재현 가능",
+  "rules": [
+    "원천 시스템과 원천 장비 ID의 쌍으로 정규 식별자를 매핑한다.",
+    "event_id는 원천 시스템 내에서만 유일하다.",
+    "입력의 중복은 (system,event_id)로 식별하고 한 건만 남긴다.",
+    "유효하지 않은 식별자와 고아 이벤트는 승인 없이 임의 배정하지 않는다.",
+    "서로 다른 시간대 입력을 UTC ISO 8601로 정규화한다.",
+    "결과 집계는 중복 제거한 유효 이벤트에 대해서만 수행한다."
+  ],
+  "assets": [
+    {
+      "system": "ALPHA",
+      "source_asset_id": "E-01",
+      "canonical_asset_id": "SYN-1001"
+    },
+    {
+      "system": "ALPHA",
+      "source_asset_id": "E-02",
+      "canonical_asset_id": "SYN-1002"
+    },
+    {
+      "system": "BRAVO",
+      "source_asset_id": "E-01",
+      "canonical_asset_id": "SYN-2001"
+    },
+    {
+      "system": "BRAVO",
+      "source_asset_id": "E-03",
+      "canonical_asset_id": "SYN-2003"
+    }
+  ],
+  "events": [
+    {
+      "system": "ALPHA",
+      "event_id": "M-001",
+      "source_asset_id": "E-01",
+      "occurred_at": "2026-10-01T09:00:00Z",
+      "state": "COMPLETED"
+    },
+    {
+      "system": "ALPHA",
+      "event_id": "M-001",
+      "source_asset_id": "E-01",
+      "occurred_at": "2026-10-01T09:00:00Z",
+      "state": "COMPLETED"
+    },
+    {
+      "system": "ALPHA",
+      "event_id": "M-002",
+      "source_asset_id": "E-02",
+      "occurred_at": "2026-10-02T10:00:00Z",
+      "state": "COMPLETED"
+    },
+    {
+      "system": "BRAVO",
+      "event_id": "M-001",
+      "source_asset_id": "E-01",
+      "occurred_at": "2026-10-03T10:00:00Z",
+      "state": "COMPLETED"
+    },
+    {
+      "system": "BRAVO",
+      "event_id": "M-003",
+      "source_asset_id": "E-03",
+      "occurred_at": "2026-10-04T10:00:00Z",
+      "state": "COMPLETED"
+    },
+    {
+      "system": "BRAVO",
+      "event_id": "M-004",
+      "source_asset_id": "E-99",
+      "occurred_at": "2026-10-04T12:00:00Z",
+      "state": "COMPLETED"
+    },
+    {
+      "system": "ALPHA",
+      "event_id": "M-003",
+      "source_asset_id": "E-01",
+      "occurred_at": "2026-10-05T12:00:00+09:00",
+      "state": "COMPLETED"
+    }
+  ],
+  "assessed_outcomes": [
+    "PLO02",
+    "PLO03",
+    "PLO04"
+  ],
+  "rubric_id": "PE02",
+  "max_points": 5,
+  "learner_submissions": [
+    "정규ID 매핑 규칙과 모호성 설명",
+    "중복·고아 이벤트 분리 기록",
+    "시스템별 원천 event_id 중복 충돌 처리",
+    "UTC 변환 테이블",
+    "정규ID별 완결 이벤트 수와 재현 가능한 변환 절차",
+    "조건·보안·한계 설명"
+  ],
+  "teacher_reference_only": {
+    "deduplicate_by": [
+      "system",
+      "event_id"
+    ],
+    "join_key": [
+      "system",
+      "source_asset_id"
+    ],
+    "total_source_events": 7,
+    "duplicate_count": 1,
+    "unique_event_count": 6,
+    "unmatched_event_count": 1,
+    "matched_event_count": 5,
+    "unique_canonical_ids": 4,
+    "counts_by_canonical_id": {
+      "SYN-1001": 2,
+      "SYN-1002": 1,
+      "SYN-2001": 1,
+      "SYN-2003": 1
+    },
+    "utc_example": {
+      "ALPHA:M-003": "2026-10-05T03:00:00.000Z"
+    }
+  },
+  "approval_status": "EXPERT_VERIFICATION_PENDING",
+  "integrity_status": "SYNTHETIC_FIXTURE_REFERENCE_CAN_BE_AUTOTESTED",
+  "reuse": "not for unreleased official exams; evaluator must independently approve any future scored assessment"
+}
