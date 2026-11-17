@@ -54,6 +54,7 @@ jobs:
           node android-army-academy/qa/curriculum_candidate_test.js
           node android-army-academy/qa/instructional_evidence_audit.js --out instructional-evidence-artifacts
           node android-army-academy/qa/synthetic_practicum_test.js
+          node android-army-academy/qa/institutional_no_go_test.js
           node android-army-academy/qa/curriculum_dossier_export.js --out curriculum-review-artifacts
           bash android-army-academy/qa/emulator_smoke.sh --self-test
           python3 android-army-academy/qa/educational_quality_gate.py
