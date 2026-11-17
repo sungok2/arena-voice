@@ -34,7 +34,7 @@ jobs:
           gradle-version: '8.13'
       - name: Static and data validation
         run: |
-          for p in app.js module_draft.js quiz_upgrade.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do node --check "android-army-academy/app/src/main/assets/$p"; done
+          for p in app.js module_draft.js quiz_upgrade.js quiz_applied_v2_3_3.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do node --check "android-army-academy/app/src/main/assets/$p"; done
           node android-army-academy/qa/backup_test.js
           node android-army-academy/qa/module_draft_test.js
           node android-army-academy/qa/question_bank_review_export.js --out review-artifacts
@@ -43,12 +43,13 @@ jobs:
           python3 android-army-academy/qa/content_audit.py
           python3 android-army-academy/qa/content_252_audit.py
           node android-army-academy/qa/quiz_difficulty_test.js
+          node android-army-academy/qa/question_integrity_test.js
           python3 android-army-academy/qa/educational_quality_gate.py
           python3 android-army-academy/qa/quality_gate.py
           python3 android-army-academy/qa/release_gate.py
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.3.2-EXPERT-REVIEW-INVENTORY
+          name: ARMY-AI-ACADEMY-2.3.3-EXPERT-REVIEW-INVENTORY
           path: review-artifacts/
           retention-days: 30
           if-no-files-found: error
@@ -57,7 +58,7 @@ jobs:
         run: gradle :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.3.2-DEBUG-ONLY-DO-NOT-DISTRIBUTE
+          name: ARMY-AI-ACADEMY-2.3.3-DEBUG-ONLY-DO-NOT-DISTRIBUTE
           path: android-army-academy/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 7
           if-no-files-found: error
