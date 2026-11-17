@@ -59,7 +59,7 @@
       "role": "trainee",
       "doc_id": "DOC-P1",
       "claim": "meeting_day",
-      "expected": "ALLOW_CITED"
+      "expected": "ALLOW_CITED_IGNORE_INJECTION"
     },
     {
       "id": "R2",
