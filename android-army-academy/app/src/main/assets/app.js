@@ -48,7 +48,7 @@ const listUnique=a=>[...new Set(a)];
 const counts=()=>Object.entries(state.lessonEvidence||{}).filter(([key,e])=>moduleVerified(key)&&!!window.ACADEMY_LESSONS?.[key.split(':')[0]]?.[Number(key.split(':')[1])-1]).length;
 const totalXP=()=>Math.min(6360,counts()*25);
 const level=()=>{let l=LEVELS[0],i=1;LEVELS.forEach((v,j)=>{if(totalXP()>=v[0]){l=v;i=j+1}});return {name:l[1],lvl:i,min:l[0]};};
-let view='home',courseFilter='ALL',bookmarkOnly=false,query='',openedCourse=null,openedWeek=1,diagTrack='AT',diagIndex=0,diagAnswers={},diagFinished=false,toastHandle=null,openedModule=null,moduleChoices={};
+let view='home',courseFilter='ALL',bookmarkOnly=false,query='',openedCourse=null,openedWeek=1,diagTrack='AT',diagIndex=0,diagAnswers={},diagFinished=false,toastHandle=null,openedModule=null,moduleChoices={},moduleFeedback=false;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch{toast('저장 공간이 부족해 변경을 저장하지 못했습니다.');}}
 function toast(message,kind='success'){const t=$('toast');t.textContent=message;t.style.background=kind==='warning'?'#64482d':'#24504d';t.classList.add('show');clearTimeout(toastHandle);toastHandle=setTimeout(()=>t.classList.remove('show'),3400);}
 let audioContext=null;
@@ -119,7 +119,7 @@ function renderModuleLesson(){
    ? [['원천·정의', '원천·스키마·키·시간·단위·이용권한을 명시했는가?'],['재현', '변환·조인·품질검사의 단계와 산출물을 다시 만들 수 있는가?'],['결함·보호', '누락·중복·오류격리·접근통제·출처를 확인했는가?'],['검증', '검사 대상·분모·기준·전제조건을 구분했는가?']]
    :[['문제·기준선', '요구·사용자·현재 문제·미측정 항목을 구분했는가?'],['대안·위험', '비AI 대안·비용·안전·권한과 반대 사례를 검토했는가?'],['판정 근거', '정량 목표와 검증자료·기준의 단위를 명시했는가?'],['승인경계', '공식 규정 현행성과 심사·승인 권한을 확인했는가?']];
   html+='<section class="lesson-chapter evidence-checklist"><h3>학습 산출물 자체 점검</h3><p class="microcopy">아래는 교관 제출 전 점검 항목입니다. 체크 여부만으로 수행능력이나 공식 이수가 인증되지는 않습니다.</p><ul>'+rubric.map(([label,rule])=>'<li><strong>'+esc(label)+'</strong> · '+esc(rule)+'</li>').join('')+'</ul></section>';
-  html+='<section class="lesson-chapter lesson-quiz"><h3>이해도 확인 · 2문항</h3>'+qs.map((q,qi)=>'<div class="module-question"><p><strong>'+(qi+1)+'. '+esc(q.q)+'</strong></p><div class="module-options">'+q.choices.map((ch,oi)=>'<button type="button" class="module-option '+(moduleChoices[qi]===oi?'selected':'')+'" data-action="module-choice" data-q="'+qi+'" data-option="'+oi+'" aria-pressed="'+(moduleChoices[qi]===oi)+'">'+String.fromCharCode(65+oi)+'. '+esc(ch)+'</button>').join('')+'</div>'+(moduleChoices[qi]===undefined?'':'<p class="module-explain '+(moduleChoices[qi]===q.a?'answer-ok':'answer-review')+'">'+(moduleChoices[qi]===q.a?'✓ 정답입니다. ':'다시 확인해 보세요. ')+esc(q.why)+'</p>')+'</div>').join('')+'</section>';
+  html+='<section class="lesson-chapter lesson-quiz"><h3>이해도 확인 · 2문항</h3>'+qs.map((q,qi)=>'<div class="module-question"><p><strong>'+(qi+1)+'. '+esc(q.q)+'</strong></p><div class="module-options">'+q.choices.map((ch,oi)=>'<button type="button" class="module-option '+(moduleChoices[qi]===oi?'selected':'')+'" data-action="module-choice" data-q="'+qi+'" data-option="'+oi+'" aria-pressed="'+(moduleChoices[qi]===oi)+'">'+String.fromCharCode(65+oi)+'. '+esc(ch)+'</button>').join('')+'</div>'+(moduleChoices[qi]===undefined||!moduleFeedback?'':'<p class="module-explain '+(moduleChoices[qi]===q.a?'answer-ok':'answer-review')+'">'+(moduleChoices[qi]===q.a?'✓ 정답입니다. ':'다시 확인해 보세요. ')+esc(q.why)+'</p>')+'</div>').join('')+'</section>';
   html+='<div class="lesson-actions"><button class="btn btn-primary" type="button" data-action="module-complete">'+(e.passed?'다시 검증하고 저장':'정답 확인 후 학습 기록 저장')+'</button><button class="btn btn-ghost" data-action="back-to-course" type="button">과목 목록으로</button></div>';
   html+='<div class="source-line"><strong>검토 상태:</strong> 교육용 강의 원고 · 독립 전문가·보안 승인 전<br><strong>참고자료:</strong> '+esc(lesson.reference_url||'모듈 단위 참고자료 검토 필요')+'<br><small>개별 사실관계의 원문 적합성은 학습자와 교관이 별도 대조해야 합니다.</small></div>';
  html+='<p class="microcopy">두 문항 모두 정답이고 본인 작성 답변이 30자 이상이어야 학습 근거가 저장됩니다. 자동 채점은 기초 이해도 확인용이며 공식 이수가 아닙니다.</p>';
@@ -128,7 +128,7 @@ function renderModuleLesson(){
 }
 function openModule(id,seq){
  const c=courseById(id);if(!c||!c.modules.some(m=>m.sequence===seq))return;
- openedCourse=id;openedModule=seq;moduleChoices={};
+ openedCourse=id;openedModule=seq;moduleChoices={};moduleFeedback=false;
  renderModuleLesson();
  const f=$('course-dialog')?.querySelector('.modal-frame');if(f)f.scrollTop=0;
  cue('advance');
@@ -151,7 +151,7 @@ function completeModuleLesson(){
  const reflection=String($('module-practice')?.value||previous.reflection||'').trim();
  if(reflection.length<30){toast('실습 답변을 30자 이상 직접 작성해 주세요.','warning');cue('warning');return;}
  const failed=lesson.questions.map((q,i)=>({q,i})).filter(({q,i})=>moduleChoices[i]!==q.a);
- if(failed.length){toast('이해도 확인: '+failed.map(x=>(x.i+1)+'번').join(', ')+' 문항을 다시 검토해 주세요.','warning');cue('warning');return;}
+ if(failed.length){moduleFeedback=true;renderModuleLesson();toast('이해도 확인: '+failed.map(x=>(x.i+1)+'번').join(', ')+' 문항을 다시 검토해 주세요.','warning');cue('warning');return;}
  if(window.ACADEMY_PILOT_LABS?.[key]&&!previous.labVerified){toast('직접 실습 검증을 먼저 통과해야 합니다.','warning');cue('warning');return;}
  if(!state.lessonEvidence||typeof state.lessonEvidence!=='object')state.lessonEvidence={};
  state.lessonEvidence[key]={...previous,passed:true,reflection:reflection.slice(0,3000),at:new Date().toISOString(),version:'2.3.0',assessmentLevel:'FORMATIVE_SELF_CHECK_ONLY'};
@@ -245,7 +245,7 @@ if(act==='bookmark'){const id=t.dataset.course;state.bookmarks=state.bookmarks.i
 if(act==='open-course')showCourse(t.dataset.course);
 if(act==='open-module')openModule(t.dataset.course,Number(t.dataset.seq));
 if(act==='back-to-course'){openedModule=null;moduleChoices={};renderCourseDetail();const f=$('course-dialog')?.querySelector('.modal-frame');if(f)f.scrollTop=0;}
-if(act==='module-choice'){moduleChoices[Number(t.dataset.q)]=Number(t.dataset.option);const f=$('course-dialog')?.querySelector('.modal-frame');const pos=f?.scrollTop||0;renderModuleLesson();if(f)f.scrollTop=pos;}
+if(act==='module-choice'){moduleFeedback=false;moduleChoices[Number(t.dataset.q)]=Number(t.dataset.option);const f=$('course-dialog')?.querySelector('.modal-frame');const pos=f?.scrollTop||0;renderModuleLesson();if(f)f.scrollTop=pos;}
 if(act==='module-complete')completeModuleLesson();
 if(act==='grade-pilot-lab')gradePilotLab();
 if(act==='close-course'){$('course-dialog').close();openedCourse=null;openedModule=null;renderCourses();renderHome();}
