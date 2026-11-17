@@ -1,5 +1,5 @@
 {
-  "version": "2.3.2-qa",
+  "version": "2.3.3-qa",
   "status": "NOT_APPROVED_PENDING_INDEPENDENT_REVIEW",
   "courses": 42,
   "modules": 252,
@@ -17,14 +17,15 @@
     "unsupervised_formative_checks_not_certification",
     "no_real_galaxy_user_test",
     "no_official_army_approval",
-    "480_unreviewed_cross_module_answer_distractors",
-    "30_unvalidated_diagnostic_keys",
-    "unfinished_draft_not_crash_persistent"
+    "unfinished_draft_not_crash_persistent",
+    "534_items_independent_key_source_review_pending",
+    "456_foundation_distractors_not_psychometrically_calibrated",
+    "30_diagnostic_scores_not_normed"
   ],
   "review_inventory": {
     "module_items": 504,
-    "near_domain_items": 480,
-    "applied_items": 24,
+    "restored_foundation_items": 456,
+    "applied_items": 48,
     "diagnostic_items": 30,
     "independently_reviewed": 0
   }
