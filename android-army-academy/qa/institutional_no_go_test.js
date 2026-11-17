@@ -6,9 +6,9 @@ const m=JSON.parse(fs.readFileSync(path.join(__dirname,'approval_manifest.json')
 const w={},ctx=vm.createContext({window:w});
 vm.runInContext(fs.readFileSync(path.join(root,'app/src/main/assets/official_curriculum.js'),'utf8'),ctx);
 const c=w.ACADEMY_OFFICIAL_CANDIDATE;
-assert.equal(m.version,'2.4.1-curriculum-candidate');
+assert.equal(m.version,'2.5.0-curriculum-candidate');
 assert.equal(m.status,'NOT_APPROVED_PENDING_INDEPENDENT_REVIEW');
-assert.equal(c.version,'2.4.1');
+assert.equal(c.version,'2.5.0');
 assert.equal(c.approval_status,'CURRICULUM_CANDIDATE_NOT_OFFICIALLY_AUTHORIZED');
 assert.equal(c.completion_policy.status,'PROPOSED_THRESHOLDS_NOT_INSTITUTIONALLY_AUTHORIZED');
 assert.equal(c.policy_validity_check.approval_status,'PENDING_INSTITUTIONAL_REVALIDATION');
