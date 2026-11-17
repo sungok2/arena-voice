@@ -2,7 +2,7 @@
 // Structural inventory, never an approval decision. All review entries default to pending.
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const base=path.join(__dirname,'../app/src/main/assets'),window={},ctx=vm.createContext({window});
-for(const file of ['data_core.js','data_plan.js','lesson_df001.js','lesson_df_expansion.js','lesson_at_expansion.js','lesson_sp_expansion.js','pilot_labs.js','quiz_upgrade.js','quiz_applied_v2_3_3.js','official_curriculum.js']){
+for(const file of ['data_core.js','data_assessment.js','data_plan.js','lesson_df001.js','lesson_df_expansion.js','lesson_at_expansion.js','lesson_sp_expansion.js','pilot_labs.js','quiz_upgrade.js','quiz_applied_v2_3_3.js','official_curriculum.js']){
  vm.runInContext(fs.readFileSync(path.join(base,file),'utf8'),ctx,{filename:file});
 }
 const D=window.ACADEMY_DATA,L=window.ACADEMY_LESSONS,C=window.ACADEMY_OFFICIAL_CANDIDATE;
