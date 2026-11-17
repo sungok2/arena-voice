@@ -34,7 +34,7 @@ for(const [id,lessons] of Object.entries(L)){
    assert.equal(q.review_flag,'EXPERT_REVIEW_PENDING',itemId);
    const choices=q.choices.slice();
    const risk=type==='NEAR_DOMAIN_CHOICE'?'HIGH: other modules\u2019 true answers reused as distractors; unique best answer unproven':'MEDIUM: handcrafted scenario, individual key/source review pending';
-   rows.push([itemId,'MODULE',course.track,id,course.name_ko,i+1,mod.title,qi+1,type,q.review_flag,q.q,...choices,letter(q.a),choices[q.a],q.why,lesson.reference_url||'',risk,'','','','','','','','','','','']);
+   rows.push([itemId,'MODULE',course.track,id,course.name_ko,i+1,mod.title,qi+1,type,q.review_flag,q.q,...choices,letter(q.a),choices[q.a],q.why,lesson.reference_url||'',risk,...Array(11).fill('')]);
    summ.module_questions++;
   }
  }
@@ -46,7 +46,7 @@ for(const q of D.diagnostic){
  const choices=['A','B','C','D'].map(k=>q.options[k]);
  assert.equal(new Set(choices).size,4,q.id);
  assert.equal(q.status,'EXPERT_REVIEW_PENDING',q.id);
- rows.push([q.id,'DIAGNOSTIC',q.track,'','','','','', 'DIAGNOSTIC_REWRITTEN',q.status,q.question,...choices,q.correct,q.options[q.correct],q.rationale,'','HIGH: diagnostic score uncalibrated; distractors imported from other true answers','','','','','','','','','','','']);
+ rows.push([q.id,'DIAGNOSTIC',q.track,'','','','','', 'DIAGNOSTIC_REWRITTEN',q.status,q.question,...choices,q.correct,q.options[q.correct],q.rationale,'','HIGH: diagnostic score uncalibrated; distractors imported from other true answers',...Array(11).fill('')]);
  summ.diagnostics++;
 }
 assert.equal(summ.modules,252);assert.equal(summ.module_questions,504);
