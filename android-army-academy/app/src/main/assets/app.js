@@ -30,7 +30,7 @@ function validatePilotLab(lab,values){
 }
 function renderPilotLab(lab,e){
  if(!lab)return '';
- const draft=e.labDraft||{};
+ const draft=window.ACADEMY_MODULE_DRAFTS.getLab(moduleKey(),e.labDraft||{});
  const inputs=lab.fields.map(f=>{
   const ctrl=f.type==='number'
     ?'<input type="number" inputmode="decimal" step="any" data-lab-field="'+esc(f.id)+'" aria-label="'+esc(f.label)+'" value="'+esc(draft[f.id]||'')+'"/>'
@@ -96,6 +96,12 @@ function renderCourses(){const filtered=D.courses.filter(c=>(courseFilter==='ALL
 function showCourse(id){const c=courseById(id);if(!c)return;openedCourse=id;renderCourseDetail();const d=$('course-dialog');if(typeof d.showModal==='function')d.showModal();else d.setAttribute('open','');cue('advance');haptic();}
 function renderCourseDetail(){if(openedModule!==null){renderModuleLesson();return;}const c=courseById(openedCourse);if(!c)return;const note=state.notes[c.id]||'',done=state.modules[c.id]||[];const p=D.questions.filter(q=>q.course_id===c.id);const question=p[0];$('course-detail').innerHTML=`<div class="dialog-top"><div><span class="eyebrow">${c.id} / ${TRACK[c.track].name}</span><h2>${esc(c.name_ko)}</h2><span class="tiny-meta">${c.modules.filter(m=>moduleVerified(c.id+':'+m.sequence)).length}/6 학습 근거 확인 · ${esc(c.status)}</span></div><button type="button" data-action="close-course" class="icon-btn" aria-label="과목 상세 닫기">✕</button></div><div class="lesson-lead"><span class="eyebrow">CORE INSIGHT · 교육 초안(미승인)</span><p style="color:#e3f5f8;font-size:.9rem">${esc(c.insight)}</p></div><div class="lesson-pitfall"><strong>주의할 오개념</strong><div>${esc(c.misconception)}</div></div><div class="section-heading"><div><span class="eyebrow">6 CORE MODULES</span><h2>이수할 모듈</h2></div></div><div class="module-list">${c.modules.map(m=>`<div class="module-item"><button type="button" class="module-open" data-action="open-module" data-course="${c.id}" data-seq="${m.sequence}"><span class="module-num">${pad(m.sequence)}</span><span class="module-copy"><strong>${esc(m.title)}</strong><small>${esc(m.objective)}</small></span><span class="module-state">${moduleVerified(c.id+':'+m.sequence)?'✓ 학습 확인':done.includes(m.sequence)?'이전 체크 기록':'내용 보기 →'}</span></button></div>`).join('')}</div><div class="section-heading"><div><span class="eyebrow">LEARNING EVIDENCE</span><h2>나의 실습·검증 기록</h2></div></div><p style="font-size:.8rem"><strong style="color:var(--ink)">실습:</strong> ${esc(c.lab)}<br><strong style="color:var(--ink)">제출물:</strong> ${esc(c.deliverable)}<br><strong style="color:var(--ink)">선수과목:</strong> ${c.prerequisites?.length?c.prerequisites.join(' · '):'없음'}</p><div class="reference-note"><b>참고 기준</b><p>${c.references?.length?c.references.map(url=>esc(url)).join('<br>'):'출처 추가 검토 필요'}</p><span class="microcopy">오프라인 앱에서 원문 링크는 열리지 않습니다. 과목별 인용의 적합성과 최신성은 전문가 검토 전입니다.</span></div><label for="course-reflection" class="eyebrow">검증 메모 · 본인 학습기록</label><textarea class="reflection-area" id="course-reflection" maxlength="4000" placeholder="핵심 개념, 실습방법, 실패 조건, 확인한 근거와 미검증 부분을 기록하세요. (30자 이상 작성 후 자체 완료 체크 가능)">${esc(note)}</textarea><p class="microcopy" id="note-feedback">${note.length} / 30자 최소 · 이 기기에만 저장</p><div class="lesson-question"><span class="eyebrow">PRACTICE / 5 REFLECTIONS</span><h3 style="margin-top:8px">근거 기반 서술형 질문</h3>${p.map((item,i)=>`<details class="reflection-question"><summary>${i+1}. ${esc(item.question)}</summary><div class="rubric">${esc(item.answer_key)}<br><br>평가: 개념 정확성 · 근거 · 제약 및 보안 · 설명 명확성</div></details>`).join('')}<p class="microcopy">총 210문항의 자기 점검 문제은행 중 이 과목의 5문항입니다. 정식 채점에는 교관 검토가 필요합니다.</p></div><div style="display:flex;gap:9px;flex-wrap:wrap"><button type="button" class="btn btn-primary" data-action="save-reflection" data-course="${c.id}">학습 메모 저장</button><button class="btn btn-ghost" data-action="close-course" type="button">목록으로</button></div>`;}
 function moduleKey(){return openedCourse+':'+openedModule;}
+function captureModuleFields(){
+ if(openedModule===null)return;
+ const el=$('module-practice'),lab={};
+ document.querySelectorAll('#course-detail [data-lab-field]').forEach(f=>{lab[f.dataset.labField]=String(f.value??'').slice(0,80);});
+ window.ACADEMY_MODULE_DRAFTS.capture(moduleKey(),el?.value,Object.keys(lab).length?lab:null);
+}
 function courseLesson(){return window.ACADEMY_LESSONS?.[openedCourse]?.[openedModule-1]||null;}
 function renderModuleLesson(){
  const c=courseById(openedCourse);if(!c||openedModule===null)return;
@@ -111,7 +117,7 @@ function renderModuleLesson(){
   html+='<div class="lesson-progress"><span>1. 개념 학습</span><span>2. 사례·실습</span><span>3. 이해도 확인</span></div>';
   for(const s of lesson.sections)html+='<section class="lesson-chapter"><h3>'+esc(s[0])+'</h3><p>'+esc(s[1])+'</p></section>';
   html+='<section class="lesson-example"><h3>🧩 '+esc(lesson.example.heading)+'</h3><ol>'+lesson.example.lines.map(line=>'<li>'+esc(line)+'</li>').join('')+'</ol></section>';
-  html+='<section class="lesson-chapter"><h3>직접 해보기</h3><p>'+esc(lesson.task)+'</p><label for="module-practice">내 실습 답변 (30자 이상)</label><textarea id="module-practice" class="reflection-area" maxlength="3000" placeholder="개념, 적용 방법, 주의사항을 직접 작성하세요.">'+esc(e.reflection||'')+'</textarea></section>';
+  html+='<section class="lesson-chapter"><h3>직접 해보기</h3><p>'+esc(lesson.task)+'</p><label for="module-practice">내 실습 답변 (30자 이상)</label><textarea id="module-practice" class="reflection-area" maxlength="3000" placeholder="개념, 적용 방법, 주의사항을 직접 작성하세요.">'+esc(window.ACADEMY_MODULE_DRAFTS.getReflection(key,e.reflection||''))+'</textarea></section>';
   html+=renderPilotLab(lab,e);
   const rubric=c.track==='AT'
    ? [['입력·조건', '계산·모델 입력·단위·실험환경·데이터 이용권한을 분명히 했는가?'],['수행', '제시한 절차로 결과를 재현하거나 실행 가능한 계산을 보였는가?'],['한계', '과적합·표본·오류·실패 조건을 결과와 분리하여 기록했는가?'],['근거', '출처·버전·평가방법 및 미검증 가정을 명시했는가?']]
@@ -134,6 +140,7 @@ function openModule(id,seq){
  cue('advance');
 }
 function gradePilotLab(){
+ captureModuleFields();
  const key=moduleKey(),lab=window.ACADEMY_PILOT_LABS?.[key];if(!lab)return;
  const values={};document.querySelectorAll('#course-detail [data-lab-field]').forEach(el=>{values[el.dataset.labField]=String(el.value||'').slice(0,80);});
  const passed=validatePilotLab(lab,values);
@@ -151,13 +158,14 @@ function completeModuleLesson(){
  const reflection=String($('module-practice')?.value||previous.reflection||'').trim();
  if(reflection.length<30){toast('실습 답변을 30자 이상 직접 작성해 주세요.','warning');cue('warning');return;}
  const failed=lesson.questions.map((q,i)=>({q,i})).filter(({q,i})=>moduleChoices[i]!==q.a);
- if(failed.length){moduleFeedback=true;renderModuleLesson();toast('이해도 확인: '+failed.map(x=>(x.i+1)+'번').join(', ')+' 문항을 다시 검토해 주세요.','warning');cue('warning');return;}
+ if(failed.length){captureModuleFields();moduleFeedback=true;renderModuleLesson();toast('이해도 확인: '+failed.map(x=>(x.i+1)+'번').join(', ')+' 문항을 다시 검토해 주세요.','warning');cue('warning');return;}
  if(window.ACADEMY_PILOT_LABS?.[key]&&!previous.labVerified){toast('직접 실습 검증을 먼저 통과해야 합니다.','warning');cue('warning');return;}
  if(!state.lessonEvidence||typeof state.lessonEvidence!=='object')state.lessonEvidence={};
- state.lessonEvidence[key]={...previous,passed:true,reflection:reflection.slice(0,3000),at:new Date().toISOString(),version:'2.3.0',assessmentLevel:'FORMATIVE_SELF_CHECK_ONLY'};
+ state.lessonEvidence[key]={...previous,passed:true,reflection:reflection.slice(0,3000),at:new Date().toISOString(),version:'2.3.2',assessmentLevel:'FORMATIVE_SELF_CHECK_ONLY'};
  if(!Array.isArray(state.modules[openedCourse]))state.modules[openedCourse]=[];
  if(!state.modules[openedCourse].includes(openedModule))state.modules[openedCourse].push(openedModule);
  const event=key;if(!state.xpEvents.includes(event))state.xpEvents.push(event);
+ window.ACADEMY_MODULE_DRAFTS.clear(key);
  save();toast('학습 내용과 실습 답변을 저장했습니다. (교육용 자체 확인)');cue('success');haptic(24);
  openedModule=null;moduleChoices={};renderCourseDetail();renderHome();renderCourses();
 }
@@ -188,7 +196,7 @@ function sanitizeBackup(input){
     const lab=window.ACADEMY_PILOT_LABS?.[k],labDraft={};
     if(v.labDraft&&typeof v.labDraft==='object'&&!Array.isArray(v.labDraft))for(const f of (lab?.fields||[]))if(typeof v.labDraft[f.id]==='string')labDraft[f.id]=v.labDraft[f.id].slice(0,80);
     const labVerified=!!lab&&v.labVerified===true&&validatePilotLab(lab,labDraft);
-    clean.lessonEvidence[k]={passed:passed&&(!lab||labVerified),reflection,labDraft,labVerified,at:typeof v.at==='string'?v.at.slice(0,40):'',version:'2.3.0',assessmentLevel:'FORMATIVE_SELF_CHECK_ONLY'};
+    clean.lessonEvidence[k]={passed:passed&&(!lab||labVerified),reflection,labDraft,labVerified,at:typeof v.at==='string'?v.at.slice(0,40):'',version:'2.3.2',assessmentLevel:'FORMATIVE_SELF_CHECK_ONLY'};
    }
   }
  }
@@ -244,11 +252,11 @@ if(act==='bookmarks-only'){bookmarkOnly=!bookmarkOnly;renderCourses();cue('tap')
 if(act==='bookmark'){const id=t.dataset.course;state.bookmarks=state.bookmarks.includes(id)?state.bookmarks.filter(x=>x!==id):[...state.bookmarks,id];save();renderCourses();cue('success');}
 if(act==='open-course')showCourse(t.dataset.course);
 if(act==='open-module')openModule(t.dataset.course,Number(t.dataset.seq));
-if(act==='back-to-course'){openedModule=null;moduleChoices={};renderCourseDetail();const f=$('course-dialog')?.querySelector('.modal-frame');if(f)f.scrollTop=0;}
-if(act==='module-choice'){moduleFeedback=false;moduleChoices[Number(t.dataset.q)]=Number(t.dataset.option);const f=$('course-dialog')?.querySelector('.modal-frame');const pos=f?.scrollTop||0;renderModuleLesson();if(f)f.scrollTop=pos;}
+if(act==='back-to-course'){captureModuleFields();openedModule=null;moduleChoices={};renderCourseDetail();const f=$('course-dialog')?.querySelector('.modal-frame');if(f)f.scrollTop=0;}
+if(act==='module-choice'){captureModuleFields();moduleFeedback=false;moduleChoices[Number(t.dataset.q)]=Number(t.dataset.option);const f=$('course-dialog')?.querySelector('.modal-frame');const pos=f?.scrollTop||0;renderModuleLesson();if(f)f.scrollTop=pos;}
 if(act==='module-complete')completeModuleLesson();
 if(act==='grade-pilot-lab')gradePilotLab();
-if(act==='close-course'){$('course-dialog').close();openedCourse=null;openedModule=null;renderCourses();renderHome();}
+if(act==='close-course'){captureModuleFields();$('course-dialog').close();openedCourse=null;openedModule=null;renderCourses();renderHome();}
 if(act==='save-reflection'&&openedCourse){state.notes[openedCourse]=sanitize($('course-reflection').value);save();toast('학습 기록을 기기에 저장했습니다.');cue('success');}
 if(act==='diag-track'){diagTrack=t.dataset.track;diagIndex=0;diagFinished=false;diagAnswers={};renderDiagnostic();cue('tap')}
 if(act==='answer'){const q=D.diagnostic.filter(q=>q.track===diagTrack)[diagIndex];diagAnswers[q.id]=t.dataset.answer;renderDiagnostic();cue('tap');}
@@ -265,11 +273,11 @@ if(act==='import-progress')selectBackup();
 if(act==='reset-progress'){if(confirm('로컬 학습 기록·메모·진도·XP를 모두 삭제하시겠습니까? 되돌릴 수 없습니다.')){localStorage.removeItem(KEY);location.reload();}}
 });
 window.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('course-dialog').open)$('course-dialog').close();if($('settings-dialog').open)$('settings-dialog').close();}});
-$('course-dialog').addEventListener('close',()=>{openedCourse=null;openedModule=null;renderCourses();renderHome()});
+$('course-dialog').addEventListener('close',()=>{captureModuleFields();openedCourse=null;openedModule=null;renderCourses();renderHome()});
 $('settings-dialog').addEventListener('close',()=>{if(view==='profile')renderProfile();});
 // Android system Back: close overlays first, then return to the learning home screen.
 window.handleAndroidBack=()=>{
- if($('course-dialog').open){if(openedModule!==null){openedModule=null;moduleChoices={};renderCourseDetail();}else $('course-dialog').close();return true;}
+ if($('course-dialog').open){if(openedModule!==null){captureModuleFields();openedModule=null;moduleChoices={};renderCourseDetail();}else $('course-dialog').close();return true;}
  if($('settings-dialog').open){$('settings-dialog').close();return true;}
  if(view!=='home'){go('home');return true;}
  return false;

@@ -12,7 +12,7 @@ assert 'android.permission.INTERNET' not in manifest
 assert 'android.permission.READ_EXTERNAL_STORAGE' not in manifest
 assert 'android.permission.MANAGE_EXTERNAL_STORAGE' not in manifest
 assert 'minSdk 26' in gradle and 'targetSdk 36' in gradle
-assert 'versionCode 14' in gradle and "versionName '2.3.1'" in gradle
+assert 'versionCode 15' in gradle and "versionName '2.3.2'" in gradle
 assert 'signingConfigs.debug' not in gradle,'Production release must NEVER fall back to debug signing'
 assert 'if (persistentStore) signingConfig signingConfigs.production' in gradle
 assert 'WebView.setWebContentsDebuggingEnabled(false)' in java
@@ -20,4 +20,7 @@ assert 'setAllowFileAccess(false)' in java
 assert 'setAcceptThirdPartyCookies(webView, false)' in java
 assert 'LOCAL_HOST.equals(uri.getHost())' in java
 assert (root/'app/src/main/assets/index.html').exists()
+assert (root/'app/src/main/assets/module_draft.js').exists()
+html=(root/'app/src/main/assets/index.html').read_text()
+assert html.index('src="module_draft.js"')<html.index('src="app.js"')
 print('RELEASE_SOURCE_SECURITY_GATE_PASS: signature debug fallback absent, offline-only, backup off')
