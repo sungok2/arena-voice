@@ -30,17 +30,18 @@ jobs:
           gradle-version: '8.13'
       - name: Static and data validation
         run: |
-          for p in app.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js; do node --check "android-army-academy/app/src/main/assets/$p"; done
+          for p in app.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js; do node --check "android-army-academy/app/src/main/assets/$p"; done
           node android-army-academy/qa/backup_test.js
           node android-army-academy/qa/lesson_reader_test.js
           python3 android-army-academy/qa/content_audit.py
+          python3 android-army-academy/qa/content_252_audit.py
           python3 android-army-academy/qa/release_gate.py
       - name: Lint and debug build
         working-directory: android-army-academy
         run: gradle :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.1.0-DEBUG-ONLY-DO-NOT-DISTRIBUTE
+          name: ARMY-AI-ACADEMY-2.2.0-DEBUG-ONLY-DO-NOT-DISTRIBUTE
           path: android-army-academy/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 7
           if-no-files-found: error
