@@ -34,7 +34,7 @@ for(const [index,item] of items.entries()){
   assert.equal(q.difficulty,'FOUNDATION_DRAFT');
  }else if(q.item_type==='APPLIED_SCENARIO'){
   applied++;
-  if(q.provenance==='2.3.3_HAND_AUTHORED_SYNTHETIC')authored++;
+  if(q.provenance==='2.3.3_EDITORIAL_SYNTHETIC_DRAFT')authored++;
   assert.equal(q.difficulty,'APPLIED_DRAFT',item.id);
  }else throw Error('Unclassified item '+item.id+': '+q.item_type);
 }
