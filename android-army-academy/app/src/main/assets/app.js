@@ -17,7 +17,7 @@ const pad=n=>String(n).padStart(2,'0');
 const displayTrack=t=>TRACK[t]?.name||t;
 const courseById=id=>D.courses.find(c=>c.id===id);
 function moduleVerified(k){
- const e=state.lessonEvidence?.[k];return !!e?.passed&&(!window.ACADEMY_PILOT_LABS?.[k]||e.labVerified===true);
+ const e=state.lessonEvidence?.[k];return e?.passed===true&&e.version==='2.3.3'&&(!window.ACADEMY_PILOT_LABS?.[k]||e.labVerified===true);
 }
 function validatePilotLab(lab,values){
  if(!lab||!values)return false;
@@ -108,7 +108,7 @@ function renderModuleLesson(){
  const m=c.modules.find(x=>x.sequence===openedModule);if(!m)return;
  const lesson=courseLesson(),key=moduleKey(),e=state.lessonEvidence?.[key]||{},qs=lesson?.questions||[],lab=window.ACADEMY_PILOT_LABS?.[key]||null;
  const legacy=(state.modules[c.id]||[]).includes(openedModule)&&!moduleVerified(key);
- const intro='<div class="dialog-top"><div><span class="eyebrow">'+esc(c.id)+' / MODULE '+pad(openedModule)+'</span><h2>'+esc(m.title)+'</h2><span class="tiny-meta">'+(moduleVerified(key)?'✓ 자체 학습 확인':legacy?'이전 기록 / 실습검증 필요':'학습 중 · 교관 미검수')+'</span></div><button type="button" class="icon-btn" data-action="back-to-course" aria-label="과목으로 돌아가기">↩</button></div>';
+ const intro='<div class="dialog-top"><div><span class="eyebrow">'+esc(c.id)+' / MODULE '+pad(openedModule)+'</span><h2>'+esc(m.title)+'</h2><span class="tiny-meta">'+(moduleVerified(key)?'✓ 자체 학습 확인':legacy?'이전 기록 / 최신 문항 재확인 필요':'학습 중 · 교관 미검수')+'</span></div><button type="button" class="icon-btn" data-action="back-to-course" aria-label="과목으로 돌아가기">↩</button></div>';
  let html=intro+'<p class="module-objective">'+esc(m.objective)+'</p>';
  if(!lesson){
   html+='<div class="honesty-notice"><span>!</span><p>이 모듈의 독립 강의·확인문항은 아직 작성·검수되지 않았습니다. 현재는 과목 개요와 실습 방향만 제공합니다. 내용 없이 완료 처리하지 않습니다.</p></div>';
