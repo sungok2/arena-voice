@@ -14,7 +14,11 @@ assert(js.includes('function openModule('));
 assert(js.includes('function completeModuleLesson('));
 assert(js.includes("if(reflection.length<30)"));
 assert(js.includes("moduleChoices[i]!==q.a"));
-assert(js.includes('state.lessonEvidence[key]={passed:true'));
+assert(js.includes('passed:true,reflection:'));
+assert(js.includes('function gradePilotLab('));
+assert(js.includes('labVerified:passed'));
+assert(js.includes('!previous.labVerified'));
+assert(js.includes('function moduleVerified('));
 assert(js.includes('if(!lesson){'));
 console.log('LESSON_READER_QA_PASS: DF001 6 written lessons + 12 checks + gated completion + fallback drafts');
 
