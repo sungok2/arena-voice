@@ -1,0 +1,121 @@
+{
+  "classification": "PUBLIC_SYNTHETIC_TRAINING_ONLY",
+  "approval_status": "INSTRUCTIONAL_DRAFT_NOT_APPROVED_FOR_OFFICIAL_SCORING",
+  "license": "Project-authored synthetic educational case; permitted for public practice",
+  "examination_note": "The input and answer key are public. Prohibited for official supervised exam or credentialing; subject-matter and assessor validation pending",
+  "max_points": 5,
+  "rubric": {
+    "accuracy": 2,
+    "reproducibility": 1,
+    "authorization_and_safety": 1,
+    "limitations_and_reporting": 1
+  },
+  "id": "PE01",
+  "assessment_id": "PE01",
+  "title": "합성 데이터 품질: 중복·결측·유효성·시간 표준화",
+  "week": 6,
+  "plo": [
+    "PLO03"
+  ],
+  "prerequisites": [
+    "DF-001",
+    "DF-006"
+  ],
+  "teaching_minutes_proposed": 55,
+  "task": "합성 정비 기록 8개에서 이벤트 식별자를 기준으로 중복을 제거하고, 필수 자산 ID·허용 상태·ISO 날짜를 검증하라. 정상·중복·격리 건수를 분리하고 입력 기준 필드별 결함률의 분모를 명시하라.",
+  "rules": {
+    "duplicate_key": [
+      "event_id"
+    ],
+    "validation_order": "Deduplicate first; quarantine unique records with blank asset_id, invalid state, invalid timestamp",
+    "accepted_states": [
+      "COMPLETE",
+      "PENDING"
+    ],
+    "date_rule": "ISO-8601 timestamp with timezone, valid calendar time",
+    "no_auto_repair": true
+  },
+  "records": [
+    {
+      "event_id": "Q-01",
+      "asset_id": "X-1",
+      "at": "2026-11-01T01:00:00Z",
+      "state": "COMPLETE"
+    },
+    {
+      "event_id": "Q-02",
+      "asset_id": "",
+      "at": "2026-11-02T02:00:00Z",
+      "state": "COMPLETE"
+    },
+    {
+      "event_id": "Q-03",
+      "asset_id": "X-2",
+      "at": "2026-11-03T03:00:00Z",
+      "state": "PENDING"
+    },
+    {
+      "event_id": "Q-01",
+      "asset_id": "X-1",
+      "at": "2026-11-01T01:00:00Z",
+      "state": "COMPLETE"
+    },
+    {
+      "event_id": "Q-04",
+      "asset_id": "X-3",
+      "at": "2026-11-04T04:00:00Z",
+      "state": "UNKNOWN"
+    },
+    {
+      "event_id": "Q-05",
+      "asset_id": "X-1",
+      "at": "2026-11-05T05:00:00Z",
+      "state": "PENDING"
+    },
+    {
+      "event_id": "Q-06",
+      "asset_id": "X-4",
+      "at": "not-a-date",
+      "state": "COMPLETE"
+    },
+    {
+      "event_id": "Q-07",
+      "asset_id": "X-2",
+      "at": "2026-11-07T07:00:00Z",
+      "state": "COMPLETE"
+    }
+  ],
+  "instructor_reference": {
+    "raw": 8,
+    "duplicates": 1,
+    "unique": 7,
+    "quarantined": 3,
+    "valid": 4,
+    "raw_asset_id_complete_pct": 87.5,
+    "raw_state_valid_pct": 87.5,
+    "raw_timestamp_valid_pct": 87.5,
+    "valid_event_ids": [
+      "Q-01",
+      "Q-03",
+      "Q-05",
+      "Q-07"
+    ],
+    "quarantined_event_ids": [
+      "Q-02",
+      "Q-04",
+      "Q-06"
+    ]
+  },
+  "expected_evidence": [
+    "무결성 규칙/분모",
+    "정상·격리·중복 분리 증거",
+    "검증을 재현할 코드·로그",
+    "오류의 불확실성과 미승인 원천의 처리방침"
+  ],
+  "pitfalls": [
+    "원시 건수와 중복제거 건수의 분모 혼동",
+    "고아/유효성 실패 데이터를 조용히 삭제",
+    "중복 이벤트를 유효 건수에 이중 계산"
+  ],
+  "methodological_reference": "https://www.iso.org/standard/35736.html"
+}
