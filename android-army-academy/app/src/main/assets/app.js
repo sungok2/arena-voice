@@ -256,7 +256,7 @@ if(act==='back-to-course'){captureModuleFields();openedModule=null;moduleChoices
 if(act==='module-choice'){captureModuleFields();moduleFeedback=false;moduleChoices[Number(t.dataset.q)]=Number(t.dataset.option);const f=$('course-dialog')?.querySelector('.modal-frame');const pos=f?.scrollTop||0;renderModuleLesson();if(f)f.scrollTop=pos;}
 if(act==='module-complete')completeModuleLesson();
 if(act==='grade-pilot-lab')gradePilotLab();
-if(act==='close-course'){$('course-dialog').close();openedCourse=null;openedModule=null;renderCourses();renderHome();}
+if(act==='close-course'){captureModuleFields();$('course-dialog').close();openedCourse=null;openedModule=null;renderCourses();renderHome();}
 if(act==='save-reflection'&&openedCourse){state.notes[openedCourse]=sanitize($('course-reflection').value);save();toast('학습 기록을 기기에 저장했습니다.');cue('success');}
 if(act==='diag-track'){diagTrack=t.dataset.track;diagIndex=0;diagFinished=false;diagAnswers={};renderDiagnostic();cue('tap')}
 if(act==='answer'){const q=D.diagnostic.filter(q=>q.track===diagTrack)[diagIndex];diagAnswers[q.id]=t.dataset.answer;renderDiagnostic();cue('tap');}
