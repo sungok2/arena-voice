@@ -15,9 +15,19 @@ function csv(name,head,rows){
 }
 const weekRows=C.weeks.map((w,i)=>{const p=D.recommended.weeks[i];return [w.week,p.common,Object.values(p.AT).reduce((a,b)=>a+b,0),Object.values(p.DF).reduce((a,b)=>a+b,0),Object.values(p.SP).reduce((a,b)=>a+b,0),p.capstone,p.assessment,w.plo.join(';'),w.method,w.task,w.evidence.join(';'),w.checkpoint,'PENDING_EXPERT_APPROVAL','']});
 csv('weekly_outcome_evidence_matrix.csv',['week','common_h','AT_h','DF_h','SP_h','capstone_h','assessment_h','PLO_ids','method','performance_task','evidence_ids','critical_checkpoint','review_status','reviewer_notes'],weekRows);
+const courseMap=new Map(D.courses.map(c=>[c.id,c]));
+const moduleRows=[];
+for(const w of C.module_allocations){
+ for(const [id,slots] of Object.entries(w.modules)){
+  const course=courseMap.get(id);assert(course,'Unknown mapped course '+id);
+  slots.forEach((seq,h)=>{const m=course.modules[seq-1];assert(m,'Missing module '+id+':'+seq);moduleRows.push([w.week,course.track,id,course.name_ko,h+1,seq,m.title,m.objective,C.weeks[w.week-1].evidence.join(';'),'PENDING_INSTRUCTOR_REVIEW','']);});
+ }
+}
+assert.equal(moduleRows.length,90,'Lesson-level hour mapping must contain exactly 90 rows');
+csv('specialist_lesson_session_matrix.csv',['week','track','course_id','course_title','course_week_hour_slot','module_sequence','module_title','observable_module_objective','week_evidence_ids','instructional_review_status','instructor_notes'],moduleRows);
 csv('program_learning_outcomes.csv',['PLO_id','track','competency_title','observable_performance','assessment_ids','SME_1','SME_2','review_decision','notes'],C.outcomes.map(o=>[o.id,o.track,o.title,o.performance,o.assessment.join(';'),'','','PENDING','']));
 csv('assessment_blueprint.csv',['assessment_id','name','week','max_points','PLO_ids','type','rubric_id','approved_assessment_bank','review_status','examiner_1','examiner_2','notes'],C.assessments.map(a=>[a.id,a.name,a.week,a.points,a.plo.join(';'),a.type,a.rubric,a.needsApprovedBank?'REQUIRED_NOT_AVAILABLE':'N/A','NOT_APPROVED','','','']));
 csv('approval_gate_register.csv',['gate_id','gate_name','status','required_evidence_uri','owner','review_date','decision','notes'],C.quality_gates.map(g=>[g.id,g.label,g.status,'','','','PENDING','']));
 const summary={program_id:C.program_id,version:C.version,status:C.approval_status,approval_signoffs_completed:0,courses_in_library:D.courses.length,scheduled_weeks:12,planned_hours:144,specialist_hours:{AT:31,DF:30,SP:29},outcomes:C.outcomes.length,assessments:C.assessments.length,max_total_points:C.assessments.reduce((s,a)=>s+a.points,0),record:'REVIEW_INVENTORY_ONLY_NOT_OFFICIAL_APPROVAL'};
 fs.writeFileSync(path.join(out,'curriculum_review_manifest.json'),JSON.stringify(summary,null,2)+'\n','utf8');
-console.log('CURRICULUM_REVIEW_EXPORT_PASS: 12 weeks, 8 outcomes, 9 assessments, 7 approval gates, 0 official signoffs');
+console.log('CURRICULUM_REVIEW_EXPORT_PASS: 12 weeks, 90 mapped lesson-hours, 8 outcomes, 9 assessments, 7 approval gates, 0 official signoffs');
