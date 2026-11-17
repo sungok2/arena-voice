@@ -300,8 +300,8 @@ if(act==='open-settings')openSettings();
 if(act==='close-settings')$('settings-dialog').close();
 if(act==='test-sound'){const old=state.settings.sound;state.settings.sound=true;cue('level');state.settings.sound=old;}
 if(act==='export-plan')exportJSON('academy_personal_12week_plan.json',{...plan(),status:'EDUCATIONAL_PLAN_NOT_OFFICIAL'});
-if(act==='export-curriculum-candidate')exportJSON('academy_curriculum_review_candidate_2_4_0.json',window.ACADEMY_OFFICIAL_CANDIDATE);
-if(act==='export-public-practice'){const id=target.dataset.practice;const practice=window.ACADEMY_PUBLIC_PRACTICA?.find(x=>x.id===id);if(practice)exportJSON('academy_public_practice_'+id.toLowerCase()+'.json',practice);}
+if(act==='export-curriculum-candidate')exportJSON('academy_curriculum_review_candidate_2_5_0.json',window.ACADEMY_OFFICIAL_CANDIDATE);
+if(act==='export-public-practice'){const id=t.dataset.practice;const practice=window.ACADEMY_PUBLIC_PRACTICA?.find(x=>x.id===id);if(practice)exportJSON('academy_public_practice_'+id.toLowerCase()+'.json',practice);}
 if(act==='export-capstone')exportJSON('academy_capstone_selfcheck.json',{status:'SELF_CHECK_NOT_OFFICIAL',completed:state.capstone.map(i=>CAPSTONE[i]),total:CAPSTONE.length});
 if(act==='export-progress')exportJSON('academy_private_learning_backup.json',{version:1,exportedAt:new Date().toISOString(),status:'LOCAL_SELF_REPORTED_NOT_OFFICIAL',data:state});
 if(act==='import-progress')selectBackup();
