@@ -45,6 +45,8 @@ jobs:
           node android-army-academy/qa/question_integrity_test.js
           node android-army-academy/qa/progress_version_gate_test.js
           node android-army-academy/qa/curriculum_candidate_test.js
+          node android-army-academy/qa/instructional_evidence_audit.js --out instructional-evidence-artifacts
+          node android-army-academy/qa/synthetic_practicum_test.js
           node android-army-academy/qa/curriculum_dossier_export.js --out curriculum-review-artifacts
           bash android-army-academy/qa/emulator_smoke.sh --self-test
           python3 android-army-academy/qa/educational_quality_gate.py
@@ -70,7 +72,7 @@ jobs:
       - name: Upload unsigned build for secure local signing
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.4.0-UNSIGNED
+          name: ARMY-AI-ACADEMY-2.4.1-UNSIGNED
           path: dist/
           if-no-files-found: error
           retention-days: 1
