@@ -132,7 +132,7 @@ function sanitizeBackup(input){
  if(b.modules&&typeof b.modules==='object'&&!Array.isArray(b.modules))for(const [id,items] of Object.entries(b.modules))if(ids.has(id)&&Array.isArray(items))clean.modules[id]=listUnique(items.filter(n=>Number.isInteger(n)&&n>=1&&n<=6)).sort((a,b)=>a-b);
  if(b.lessonEvidence&&typeof b.lessonEvidence==='object'&&!Array.isArray(b.lessonEvidence)){
   for(const [k,v] of Object.entries(b.lessonEvidence)){
-   const match=/^(AT|DF|SP)-\\d{3}:[1-6]$/.test(k)&&ids.has(k.split(':')[0]);
+   const match=/^(AT|DF|SP)-\d{3}:[1-6]$/.test(k)&&ids.has(k.split(':')[0]);
    if(match&&v&&typeof v==='object'&&v.passed===true&&typeof v.reflection==='string'&&v.reflection.trim().length>=30){
     clean.lessonEvidence[k]={passed:true,reflection:v.reflection.slice(0,3000),at:typeof v.at==='string'?v.at.slice(0,40):'',version:'2.0.2'};
    }
@@ -172,7 +172,7 @@ validateState();
 for(const button of document.querySelectorAll('[data-view-target]'))button.addEventListener('click',()=>go(button.dataset.viewTarget));
 $('settings-open').addEventListener('click',openSettings);
 $('course-search').addEventListener('input',e=>{query=e.target.value.slice(0,80);renderCourses()});
-document.body.addEventListener('input',e=>{const t=e.target;if(t.dataset.trackWeight)changeWeight(t.dataset.trackWeight,t.value);if(t.id==='course-reflection'&&openedCourse){state.notes[openedCourse]=sanitize(t.value);save();const f=$('note-feedback');if(f)f.textContent=`${state.notes[openedCourse].length} / 30자 최소 · 자동 저장됨`;}if(t.dataset.setting){updateSetting(t.dataset.setting,t.type==='checkbox'?t.checked:t.value);}});
+document.body.addEventListener('input',e=>{const t=e.target;if(t.dataset.trackWeight)changeWeight(t.dataset.trackWeight,t.value);if(t.id==='course-reflection'&&openedCourse){state.notes[openedCourse]=sanitize(t.value);save();const f=$('note-feedback');if(f)f.textContent=`${state.notes[openedCourse].length} / 30자 최소 · 자동 저장됨`;}if(t.id==='module-practice'&&openedModule!==null){const k=moduleKey();if(!state.lessonEvidence||typeof state.lessonEvidence!=='object')state.lessonEvidence={};const e=state.lessonEvidence[k]||{};state.lessonEvidence[k]={...e,reflection:String(t.value||'').slice(0,3000)};save();}if(t.dataset.setting){updateSetting(t.dataset.setting,t.type==='checkbox'?t.checked:t.value);}});
 document.body.addEventListener('change',e=>{const t=e.target;if(t.dataset.capstone!==undefined){const i=Number(t.dataset.capstone);if(t.checked&&!state.capstone.includes(i))state.capstone.push(i);if(!t.checked)state.capstone=state.capstone.filter(x=>x!==i);save();renderCapstone();cue(t.checked?'success':'tap');haptic();}if(t.dataset.setting)updateSetting(t.dataset.setting,t.type==='checkbox'?t.checked:t.value);});
 document.body.addEventListener('click',e=>{const t=e.target.closest('[data-action]');if(!t)return;const act=t.dataset.action;const target=t.dataset.target;
 if(act==='go')go(target);
