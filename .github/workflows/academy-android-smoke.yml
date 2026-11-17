@@ -31,6 +31,8 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: '8.13'
+      - name: Verify app-only crash filter
+        run: bash android-army-academy/qa/emulator_smoke.sh --self-test
       - name: Build debug APK for emulator
         working-directory: android-army-academy
         run: gradle :app:assembleDebug --no-daemon
