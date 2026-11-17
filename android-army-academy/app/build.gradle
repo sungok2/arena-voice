@@ -3,6 +3,7 @@ plugins {
 }
 
 def persistentStore = System.getenv('ACADEMY_RELEASE_KEYSTORE_PATH')
+def previewStore = System.getenv('ACADEMY_PREVIEW_KEYSTORE_PATH')
 
 android {
     namespace 'com.sungok2.armyaiacademy'
@@ -17,6 +18,16 @@ android {
     }
 
     signingConfigs {
+        // CI's ephemeral test-only signing identity. Never use this variant for
+        // a production update or publish it as the owner-signed release APK.
+        if (previewStore) {
+            preview {
+                storeFile file(previewStore)
+                storePassword System.getenv('ACADEMY_PREVIEW_STORE_PASSWORD')
+                keyAlias System.getenv('ACADEMY_PREVIEW_KEY_ALIAS')
+                keyPassword System.getenv('ACADEMY_PREVIEW_KEY_PASSWORD')
+            }
+        }
         if (persistentStore) {
             production {
                 storeFile file(persistentStore)
@@ -33,6 +44,15 @@ android {
             // not an approved production distribution signing identity.
             if (persistentStore) signingConfig signingConfigs.production
             minifyEnabled false
+            debuggable false
+        }
+        preview {
+            initWith release
+            // Separate install identity prevents clobbering production/debug apps.
+            applicationIdSuffix ".preview"
+            versionNameSuffix "-preview"
+            if (previewStore) signingConfig signingConfigs.preview
+            // No debugging despite ephemeral test signing.
             debuggable false
         }
     }
