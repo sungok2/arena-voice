@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/academy-android-smoke.yml'
+  pull_request:
+    paths:
+      - 'android-army-academy/**'
+      - '.github/workflows/academy-android-smoke.yml'
   workflow_dispatch:
 
 permissions:
@@ -49,7 +53,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.0.0-EMULATOR-SMOKE-EVIDENCE
+          name: ARMY-AI-ACADEMY-2.3.2-EMULATOR-SMOKE-EVIDENCE
           path: smoke-evidence/
           if-no-files-found: warn
           retention-days: 7
