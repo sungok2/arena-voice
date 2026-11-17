@@ -44,6 +44,7 @@ jobs:
           node android-army-academy/qa/quiz_difficulty_test.js
           node android-army-academy/qa/question_integrity_test.js
           node android-army-academy/qa/progress_version_gate_test.js
+          bash android-army-academy/qa/emulator_smoke.sh --self-test
           python3 android-army-academy/qa/educational_quality_gate.py
           python3 android-army-academy/qa/quality_gate.py
           python3 android-army-academy/qa/release_gate.py

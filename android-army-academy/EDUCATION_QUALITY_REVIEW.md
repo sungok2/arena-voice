@@ -37,7 +37,14 @@
 5. 통과 문항만 파일럿에 투입하며, 파일럿의 응답자료는 최소수집·명확한 동의를 전제로 분석한다. 적합한 표본설계 없이 정답률·변별도·신뢰도 수치를 추정하지 않는다.
 6. 문항 승인과 실습 결과 자체 점검은 공식 교육 승인 및 군 임무 수행 권한과 별개다.
 
-## 5. 근거 문헌
+## 5. Android 에뮬레이터 진단 교정 기록
+- v2.3.3 개발 브랜치의 한 에뮬레이터 실행에서 `FATAL EXCEPTION: UiAutomation`이 관찰되어 기존 범용 패턴 `FATAL EXCEPTION` 검사로 시험이 실패했다.
+- 당시 로그상 예외는 Android UI자동화 도구에서 발생했고 해당 앱 프로세스의 명시적 `Process: com.sungok2.armyaiacademy` 크래시 기록은 확인되지 않았다. 따라서 **이 실패만으로 앱 결함을 확정하지 않는다**.
+- smoke 스크립트는 Android의 선택적 `uiautomator dump` 호출을 제외하고, 앱 프로세스의 명시적 크래시 기록만 실패로 판정하도록 바꿨다. 장치 재시작 후 앱 PID 확인, 스크린샷 기록, 크래시 로그 보관은 유지한다.
+- 테스트용 합성 로그로 (1) 외부 `UiAutomation` 예외 무시, (2) 앱 크래시 탐지, (3) 정상 로그 통과를 검증한다.
+- 수정된 시험의 GitHub Actions 결과가 통과하더라도 실제 삼성 갤럭시 실기기 검증은 별도 필요하다.
+
+## 6. 근거 문헌
 - DOE-HDBK-1204-97, *Guide to Good Practices for the Development of Test Items*: https://www.energy.gov/ehss/articles/doe-hdbk-1204-97
 - AERA/APA/NCME, *Standards for Educational and Psychological Testing* (2014): https://ncme.org/resources/books/testing-standards/
 - NIST AI RMF 1.0, MEASURE/TEVV: https://airc.nist.gov/airmf-resources/airmf/5-sec-core/
