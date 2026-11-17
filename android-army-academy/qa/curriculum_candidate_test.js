@@ -77,7 +77,7 @@ for(const [id,history] of sequenceByCourse){
 }
 assert.equal(firstExposureChecks,28,'Compulsory courses mapped in timetable');
 
-assert.equal(C.version,'2.4.1');
+assert.equal(C.version,'2.5.0');
 assert.equal(C.policy_validity_check.visible_sunset_on_current_version,'2027-06-01');
 assert.equal(C.policy_validity_check.approval_status,'PENDING_INSTITUTIONAL_REVALIDATION');
 assert.equal(C.independent_exam_capacity.status,'PENDING_COHORT_STAFFING');
