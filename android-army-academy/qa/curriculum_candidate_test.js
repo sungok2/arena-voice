@@ -35,6 +35,25 @@ for(let i=0;i<12;i++){
  assert.equal(['AT','DF','SP'].reduce((n,k)=>n+Object.values(w[k]).reduce((a,b)=>a+b,0),0),w.personal,'Specialist mismatch week '+w.week);
 }
 assert.deepEqual(sum,{AT:31,DF:30,SP:29,common:18,personal:90,assessment:8,capstone:28});
+assert.equal(C.module_allocation_status,'DRAFT_FOR_INSTRUCTOR_SEQUENCE_REVIEW');
+assert.equal(C.module_allocations.length,12);
+const courses=new Map(D.courses.map(c=>[c.id,c]));let moduleHours=0;
+for(let i=0;i<12;i++){
+ const cw=C.module_allocations[i],week=D.recommended.weeks[i];
+ assert.equal(cw.week,i+1);assert.equal(cw.status,'PENDING_COURSE_INSTRUCTOR_REVIEW');
+ for(const track of ['AT','DF','SP']){
+  const expected=Object.keys(week[track]);
+  const mapped=Object.keys(cw.modules).filter(id=>id.startsWith(track+'-'));
+  assert.deepEqual([...mapped].sort(),[...expected].sort(),'Missing course-week allocation '+i+' '+track);
+  for(const id of expected){
+   const slots=cw.modules[id],c=courses.get(id);
+   assert(c,'Unknown course');assert(Array.isArray(slots));assert.equal(slots.length,week[track][id]);
+   slots.forEach(seq=>assert(Number.isInteger(seq)&&seq>=1&&seq<=c.modules.length));
+   moduleHours+=slots.length;
+  }
+ }
+}
+assert.equal(moduleHours,90,'Specialist lesson-level allocation must cover 90h');
 assert.equal(C.outcomes.length,8);
 const ids=new Set(C.outcomes.map(x=>x.id));assert.equal(ids.size,8);
 const assIds=new Set(C.assessments.map(x=>x.id));assert.equal(assIds.size,9);
