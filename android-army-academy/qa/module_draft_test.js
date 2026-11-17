@@ -26,6 +26,7 @@ assert(app.includes('getLab(moduleKey(),e.labDraft'));
 assert(app.includes("if(act==='module-choice'){captureModuleFields();"));
 assert(app.includes("if(failed.length){captureModuleFields();"));
 assert(app.includes("if(act==='back-to-course'){captureModuleFields();"));
+assert(app.includes("if(act==='close-course'){captureModuleFields();"));
 assert(app.includes("if(openedModule!==null){captureModuleFields();"));
 assert(app.includes('ACADEMY_MODULE_DRAFTS.clear(key)'));
 console.log('MODULE_DRAFT_QA_PASS: saved fallback, unsaved reflection, lab values, module isolation, bounds, cleanup, integration hooks');
