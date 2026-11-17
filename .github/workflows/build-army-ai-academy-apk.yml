@@ -35,6 +35,7 @@ jobs:
           node android-army-academy/qa/lesson_reader_test.js
           python3 android-army-academy/qa/content_audit.py
           python3 android-army-academy/qa/content_252_audit.py
+          python3 android-army-academy/qa/educational_quality_gate.py
           python3 android-army-academy/qa/quality_gate.py
           python3 android-army-academy/qa/release_gate.py
       - name: Lint and debug build
@@ -42,7 +43,7 @@ jobs:
         run: gradle :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.3.0-rc1-DEBUG-ONLY-DO-NOT-DISTRIBUTE
+          name: ARMY-AI-ACADEMY-2.3.0-rc2-DEBUG-ONLY-DO-NOT-DISTRIBUTE
           path: android-army-academy/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 7
           if-no-files-found: error

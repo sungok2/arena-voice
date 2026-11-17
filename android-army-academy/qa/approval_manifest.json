@@ -1,0 +1,21 @@
+{
+  "version": "2.3.0-rc2",
+  "status": "NOT_APPROVED_PENDING_INDEPENDENT_REVIEW",
+  "courses": 42,
+  "modules": 252,
+  "questions": 504,
+  "required_signoffs": [
+    "subject_matter_expert",
+    "instructional_designer",
+    "lab_evaluator",
+    "security_legal",
+    "authorizing_official"
+  ],
+  "completed_signoffs": [],
+  "red_flags": [
+    "unverified_lesson_level_citations",
+    "unsupervised_formative_checks_not_certification",
+    "no_real_galaxy_user_test",
+    "no_official_army_approval"
+  ]
+}
