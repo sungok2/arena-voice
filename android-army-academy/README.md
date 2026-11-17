@@ -1,4 +1,4 @@
-# ARMY AI EXCELLENCE ACADEMY v2.4.1 — 2027 curriculum approval candidate
+# ARMY AI EXCELLENCE ACADEMY v2.5.0 — 2027 curriculum approval candidate
 
 **Status: NOT OFFICIALLY APPROVED.** This repository is a public/synthetic curriculum-proposal and offline learner-app implementation. It is NOT an approved Republic of Korea Army course, a sanctioned grading platform, or a certificate issuer.
 
@@ -45,3 +45,12 @@ Refer to [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) and [PRIVACY_OFFLINE.md](P
 - `qa/institutional_no_go_test.js`: blocks misrepresentation of missing accreditation and examination evidence.
 - First-exposure module prerequisites corrected for 10 scheduled courses. Any waiver must be separately evidenced by the governing institution.
 - Production-grade institutional learner records, instructor signoff, independent exam, pilot evaluation and official authorization remain missing.
+
+## v2.5.0 — Practicum content, not accreditation
+- Six public, fully synthetic performance-practice datasets PE01–PE06 with independent reference computations for data quality, identity fusion, group-based model evaluation, RAG authorization, non-AI cost alternatives and critical-gate TEV&V.
+- The offline app includes six *learner-only* input datasets and individual JSON export; instructor reference answers remain separate from the app. Since GitHub teacher benchmarks are public, none are confidential official examination materials.
+- [PERFORMANCE_ASSESSMENT_PRACTICUM_GUIDE.md](PERFORMANCE_ASSESSMENT_PRACTICUM_GUIDE.md) explains each dataset, 5-point provisional scoring anchors, failure modes, and instructor review requirements.
+- [CAPSTONE_ORAL_DEFENSE_EXERCISE.md](CAPSTONE_ORAL_DEFENSE_EXERCISE.md) provides 28-hour, nine-artifact capstone practice and open oral-defense questions. The app separates the nine instructor-evidence artifacts from the 14 local self-check boxes.
+- Run `qa/performance_case_suite_test.js`, `qa/synthetic_practicum_test.js`, `qa/offline_practice_bundle_test.js` for structural computation/provenance. `qa/performance_review_export.js` emits *blank* SME, instructor, and assessor calibration records.
+- **Zero official signoffs, no independent scored exam bank, no pilot teaching efficacy, no authorized military learning records.**
+
