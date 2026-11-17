@@ -35,8 +35,9 @@
       </section>
 
       <section id="view-schedule" data-view="schedule" class="view" hidden aria-labelledby="schedule-title">
-        <div class="section-header"><span class="eyebrow">MISSION MAP / 12 WEEKS</span><h1 id="schedule-title">나만의 12주 학습 경로</h1><p class="muted">주 12시간, 총 144시간. 각 주차를 펼쳐 학습 목표·실습·제출물을 확인하세요.</p></div>
-        <div class="surface schedule-head"><div><span class="eyebrow">SPECIALIZATION MIX</span><h3>전문학습 비중</h3></div><div class="mix-presets"><button class="micro-btn" data-action="preset" data-preset="balanced">균형형</button><button class="micro-btn" data-action="preset" data-preset="technology">AI 중심</button><button class="micro-btn" data-action="preset" data-preset="fusion">융합 중심</button><button class="micro-btn" data-action="preset" data-preset="strategy">전략 중심</button></div><div id="weight-controls"></div><div class="mix-bar" id="mix-bar" role="img" aria-label="전문분야 학습 비중"></div><div class="mix-summary" id="mix-summary"></div><p class="microcopy">34:33:33 균형형은 별도 검증된 권장 시간표를 표시합니다. 나머지 비중은 자동 배분된 교육안으로 선수학습 점검이 추가로 필요합니다.</p></div>
+        <div class="section-header"><span class="eyebrow">MISSION MAP / 12 WEEKS</span><h1 id="schedule-title">나만의 12주 학습 경로</h1><p class="muted">주 12시간, 총 144시간. 공식 심의 후보안의 학습성과·실습증거를 확인하세요. (교육기관 미승인)</p></div>
+        <div class="surface schedule-head"><div><span class="eyebrow">SPECIALIZATION MIX</span><h3>전문학습 비중</h3></div><div class="mix-presets"><button class="micro-btn" data-action="preset" data-preset="balanced">균형형</button><button class="micro-btn" data-action="preset" data-preset="technology">AI 중심</button><button class="micro-btn" data-action="preset" data-preset="fusion">융합 중심</button><button class="micro-btn" data-action="preset" data-preset="strategy">전략 중심</button></div><div id="weight-controls"></div><div class="mix-bar" id="mix-bar" role="img" aria-label="전문분야 학습 비중"></div><div class="mix-summary" id="mix-summary"></div><p class="microcopy">균형형은 전문학습 90시간 중 AI 31h·데이터융합 30h·전략기획 29h(약 34:33:33)를 편성합니다. 임의 비율은 심의 후보 표준 편성에서 벗어납니다.</p></div>
+        <div id="curriculum-candidate-overview" class="surface quality-section" role="region" aria-label="교육과정 심의 후보 정보"></div>
         <div class="section-heading"><div><span class="eyebrow">WEEKLY MILESTONES</span><h2>학습 단계</h2></div><button class="text-button" data-action="export-plan" type="button">계획 내보내기 ↗</button></div><div class="weeks-list" id="weeks-list"></div>
       </section>
 
@@ -89,6 +90,7 @@
   <script src="quiz_upgrade.js"></script>
   <script src="quiz_applied_v2_3_3.js"></script>
   <script src="module_draft.js"></script>
+  <script src="official_curriculum.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
