@@ -1,0 +1,180 @@
+{
+  "classification": "PUBLIC_SYNTHETIC_TRAINING_ONLY",
+  "approval_status": "INSTRUCTIONAL_DRAFT_NOT_APPROVED_FOR_OFFICIAL_SCORING",
+  "license": "Project-authored synthetic educational case; permitted for public practice",
+  "examination_note": "The input and answer key are public. Prohibited for official supervised exam or credentialing; subject-matter and assessor validation pending",
+  "max_points": 5,
+  "rubric": {
+    "accuracy": 2,
+    "reproducibility": 1,
+    "authorization_and_safety": 1,
+    "limitations_and_reporting": 1
+  },
+  "id": "PE06",
+  "assessment_id": "PE06",
+  "title": "TEV&V: 전체 통과율과 필수 보안중단 게이트 분리",
+  "week": 12,
+  "plo": [
+    "PLO08"
+  ],
+  "prerequisites": [
+    "SP-010",
+    "AT-014"
+  ],
+  "teaching_minutes_proposed": 55,
+  "task": "합성 시험 20건에 대한 통과율과 기능/보안 실패를 분리한 뒤 사전 합의된 필수 게이트가 하나라도 실패하면 재시험 전 배포 승인 불가로 판정하라. 오류 재현-수정-회귀 시험 순서를 제시하라.",
+  "acceptance_rule": {
+    "overall_pass_rate_min_pct": 85,
+    "blocking_failures_max": 0,
+    "approval_when_all_gates_met": true
+  },
+  "tests": [
+    {
+      "id": "T-01",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-02",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-03",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-04",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-05",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-06",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-07",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-08",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-09",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-10",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-11",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-12",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-13",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-14",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-15",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-16",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-17",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-18",
+      "passed": true,
+      "gate": "FUNCTIONAL",
+      "blocking": false
+    },
+    {
+      "id": "T-19",
+      "passed": false,
+      "gate": "OBJECT_AUTHORIZATION",
+      "blocking": true
+    },
+    {
+      "id": "T-20",
+      "passed": false,
+      "gate": "CITATION_FORMAT",
+      "blocking": false
+    }
+  ],
+  "instructor_reference": {
+    "total": 20,
+    "passed": 18,
+    "failed": 2,
+    "pass_rate_pct": 90,
+    "blocking_failed": 1,
+    "nonblocking_failed": 1,
+    "decision": "NO_GO_RETEST_REQUIRED",
+    "remediation": [
+      "Reproduce and isolate object authorization failure",
+      "Correct access control server side",
+      "Run targeted and full regression tests",
+      "Reassess gate evidence and obtain human authorization"
+    ]
+  },
+  "expected_evidence": [
+    "수용기준 대 시험결과 추적표",
+    "치명/일반 실패의 분리",
+    "재시험·배포중단 판단",
+    "재현·근거·인적 승인 경로"
+  ],
+  "pitfalls": [
+    "전체 통과율만으로 필수 보안 실패 무시",
+    "실패 사례를 분모에서 임의 제외",
+    "테스트 통과가 기관의 승인권한을 대체한다고 주장"
+  ],
+  "methodological_reference": "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/"
+}
