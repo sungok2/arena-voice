@@ -23,9 +23,9 @@ assert all(len(q['choices'])==4 and len(set(q['choices']))==4 and 0<=q['a']<4 fo
 stem=Counter(lecture['questions'][1]['q'] for arr in ls.values() for lecture in arr)
 assert max(stem.values())==1,"Repeated second question stem"
 pilot=load('pilot_labs.js','window.ACADEMY_PILOT_LABS=',';')
-assert len(pilot)==3
+assert len(pilot)>=15
 opts=Counter(x for q in qs for x in q['choices'])
 count=sum(v>=10 for v in opts.values())
 nist=sum(l['reference_url']=='https://www.nist.gov/itl/ai-risk-management-framework' for arr in ls.values() for l in arr)
-print('STRUCTURAL_QA_PASS: 252 lectures, 504 questions, 3 interactive pilots')
+print('STRUCTURAL_QA_PASS: 252 lectures, 504 questions, 15+ interactive pilots')
 print(f'EDUCATIONAL_APPROVAL_HOLD: repeated distractor phrases {count}; broad NIST links {nist}; expert reviews 0')
