@@ -328,6 +328,7 @@ document.body.addEventListener('change',e=>{const t=e.target;if(t.dataset.capsto
 document.body.addEventListener('click',e=>{const t=e.target.closest('[data-action]');if(!t)return;const act=t.dataset.action;const target=t.dataset.target;
 if(act==='go')go(target);
 if(act==='open-current-week'){openedWeek=currentWeek();go('schedule')}
+if(act==='resume-lesson')resumeNextLesson();
 if(act==='toggle-week'){const n=Number(t.dataset.week);openedWeek=openedWeek===n?0:n;renderSchedule();cue('tap')}
 if(act==='set-current-week'){state.currentWeek=Number(t.dataset.week);save();renderSchedule();toast(`${state.currentWeek}주차를 현재 미션으로 설정했습니다.`);cue('success')}
 if(act==='preset'){const m={balanced:[34,33,33],technology:[60,25,15],fusion:[25,60,15],strategy:[20,20,60]};const a=m[t.dataset.preset];if(a){TRACKS.forEach((key,i)=>state.weights[key]=a[i]);save();renderSchedule();renderHome();cue('advance')}}
@@ -342,11 +343,26 @@ if(act==='module-complete')completeModuleLesson();
 if(act==='grade-pilot-lab')gradePilotLab();
 if(act==='close-course'){captureModuleFields();$('course-dialog').close();openedCourse=null;openedModule=null;renderCourses();renderHome();}
 if(act==='save-reflection'&&openedCourse){state.notes[openedCourse]=sanitize($('course-reflection').value);save();toast('학습 기록을 기기에 저장했습니다.');cue('success');}
-if(act==='diag-track'){diagTrack=t.dataset.track;diagIndex=0;diagFinished=false;diagAnswers={};renderDiagnostic();cue('tap')}
-if(act==='answer'){const q=D.diagnostic.filter(q=>q.track===diagTrack)[diagIndex];diagAnswers[q.id]=t.dataset.answer;renderDiagnostic();cue('tap');}
-if(act==='diag-back'){diagIndex=Math.max(0,diagIndex-1);renderDiagnostic();cue('tap')}
-if(act==='diag-next'){const q=D.diagnostic.filter(q=>q.track===diagTrack)[diagIndex];if(!diagAnswers[q.id]){toast('응답을 선택한 뒤 진행하세요.','warning');cue('warning');return}if(diagIndex<9){diagIndex++;renderDiagnostic();cue('advance')}else{diagFinished=true;const questions=D.diagnostic.filter(q=>q.track===diagTrack);const correct=questions.filter(q=>diagAnswers[q.id]===q.correct).length;state.diagRuns.push({track:diagTrack,correct,total:10,time:new Date().toISOString(),status:'SELF_TEST_ONLY'});state.diagRuns=state.diagRuns.slice(-30);save();renderDiagnostic();cue(correct>=8?'level':'success');toast('진단을 완료했습니다. 정답과 해설을 확인하세요.')}}
-if(act==='retry-diag'){diagIndex=0;diagAnswers={};diagFinished=false;renderDiagnostic();cue('tap')}
+if(act==='diag-track'){saveDiagnosticDraft();restoreDiagnosticDraft(t.dataset.track);renderDiagnostic();cue('tap')}
+if(act==='answer'){
+ const q=D.diagnostic.filter(q=>q.track===diagTrack)[diagIndex];
+ if(!q||!Object.prototype.hasOwnProperty.call(q.options,t.dataset.answer))return;
+ diagAnswers[q.id]=t.dataset.answer;saveDiagnosticDraft();renderDiagnostic();cue('tap');
+}
+if(act==='diag-back'){diagIndex=Math.max(0,diagIndex-1);saveDiagnosticDraft();renderDiagnostic();cue('tap')}
+if(act==='diag-next'){
+ const questions=D.diagnostic.filter(q=>q.track===diagTrack),q=questions[diagIndex];
+ if(!q||!diagAnswers[q.id]){toast('응답을 선택한 뒤 진행하세요.','warning');cue('warning');return;}
+ if(diagIndex<9){diagIndex++;saveDiagnosticDraft();renderDiagnostic();cue('advance')}
+ else{
+  diagFinished=true;delete state.diagDrafts[diagTrack];
+  const correct=questions.filter(item=>diagAnswers[item.id]===item.correct).length;
+  state.diagRuns.push({track:diagTrack,correct,total:10,time:new Date().toISOString(),status:'SELF_TEST_ONLY'});
+  state.diagRuns=state.diagRuns.slice(-30);save();renderDiagnostic();cue(correct>=8?'level':'success');
+  toast('진단을 완료했습니다. 정답과 해설을 확인하세요.');
+ }
+}
+if(act==='retry-diag'){diagIndex=0;diagAnswers={};diagFinished=false;delete state.diagDrafts[diagTrack];save();renderDiagnostic();cue('tap')}
 if(act==='open-settings')openSettings();
 if(act==='close-settings')$('settings-dialog').close();
 if(act==='test-sound'){const old=state.settings.sound;state.settings.sound=true;cue('level');state.settings.sound=old;}
