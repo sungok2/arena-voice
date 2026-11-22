@@ -48,4 +48,38 @@ assert(app.includes("if(act==='answer'){"));
 assert(app.includes("diagAnswers[q.id]=t.dataset.answer;saveDiagnosticDraft()"));
 assert(app.includes('delete state.diagDrafts[diagTrack]'));
 for(const k of ['.skip-link:focus','.resume-panel','.academy-guide','@media(max-width:359px)'])assert(css.includes(k));
+
+const flowStart=app.indexOf('function renderNextLesson(){'),flowEnd=app.indexOf('function renderHome(){',flowStart);
+assert(flowStart>=0&&flowEnd>flowStart,'Executable experience functions found');
+let saves=0;const navigation=[],nodes={'home-next-lesson':{innerHTML:''}};
+const flowContext={
+ window:w,D:{courses,diagnostic:questions},state:{lastLesson:{course:'AT-001',module:2},diagDrafts:{}},
+ $:id=>nodes[id],courseById:id=>courses.find(c=>c.id===id),
+ moduleVerified:key=>new Set(['AT-001:1','AT-001:2']).has(key),
+ esc:x=>String(x),pad:n=>String(n).padStart(2,'0'),
+ diagTrack:'AT',diagIndex:0,diagAnswers:{},diagFinished:false,TRACKS:['AT','DF','SP'],
+ save:()=>{saves++},
+ showCourse:id=>navigation.push('course:'+id),
+ openModule:(id,n)=>navigation.push('module:'+id+':'+n),
+ go:id=>navigation.push('go:'+id)
+};
+vm.createContext(flowContext);
+vm.runInContext(app.slice(flowStart,flowEnd)+'globalThis.flowFunctions={renderNextLesson,resumeNextLesson,saveDiagnosticDraft,restoreDiagnosticDraft};',flowContext);
+flowContext.flowFunctions.renderNextLesson();
+assert(nodes['home-next-lesson'].innerHTML.includes('data-action="resume-lesson"'));
+assert(nodes['home-next-lesson'].innerHTML.includes('모듈 03'));
+flowContext.flowFunctions.resumeNextLesson();
+assert.deepEqual(navigation,['course:AT-001','module:AT-001:3']);
+flowContext.diagAnswers={AT1:'B'};flowContext.diagIndex=1;
+flowContext.flowFunctions.saveDiagnosticDraft();
+assert.equal(saves,1);assert.equal(flowContext.state.diagDrafts.AT.index,1);
+assert.equal(flowContext.state.diagDrafts.AT.answers.AT1,'B');
+flowContext.diagAnswers={};flowContext.diagIndex=0;
+flowContext.flowFunctions.restoreDiagnosticDraft('AT');
+assert.equal(flowContext.diagIndex,1);
+assert.equal(flowContext.diagAnswers.AT1,'B');
+flowContext.flowFunctions.restoreDiagnosticDraft('DF');
+assert.equal(flowContext.diagIndex,0);
+assert.equal(Object.keys(flowContext.diagAnswers).length,0);
+
 console.log('ACADEMY_EXPERIENCE_QA_PASS: resume, next incomplete module, draft restore, invalid input rejection, accessible integration verified');
