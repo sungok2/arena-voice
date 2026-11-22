@@ -34,7 +34,7 @@ jobs:
           gradle-version: '8.13'
       - name: Static and data validation
         run: |
-          for p in app.js module_draft.js official_curriculum.js performance_practice.js quiz_upgrade.js quiz_applied_v2_3_3.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do node --check "android-army-academy/app/src/main/assets/$p"; done
+          for p in app.js module_draft.js learning_experience.js official_curriculum.js performance_practice.js quiz_upgrade.js quiz_applied_v2_3_3.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do node --check "android-army-academy/app/src/main/assets/$p"; done
           node android-army-academy/qa/backup_test.js
           node android-army-academy/qa/module_draft_test.js
           node android-army-academy/qa/question_bank_review_export.js --out review-artifacts
@@ -49,6 +49,7 @@ jobs:
           node android-army-academy/qa/instructional_evidence_audit.js --out instructional-evidence-artifacts
           node android-army-academy/qa/synthetic_practicum_test.js
           node android-army-academy/qa/institutional_no_go_test.js
+          node android-army-academy/qa/learning_experience_test.js
           node android-army-academy/qa/performance_case_suite_test.js
           node android-army-academy/qa/offline_practice_bundle_test.js
           node android-army-academy/qa/performance_review_export.js --out performance-review-artifacts
@@ -59,25 +60,25 @@ jobs:
           python3 android-army-academy/qa/release_gate.py
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.5.0-EXPERT-REVIEW-INVENTORY
+          name: ARMY-AI-ACADEMY-2.6.0-EXPERT-REVIEW-INVENTORY
           path: review-artifacts/
           retention-days: 30
           if-no-files-found: error
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.5.0-CURRICULUM-REVIEW-DOSSIER
+          name: ARMY-AI-ACADEMY-2.6.0-CURRICULUM-REVIEW-DOSSIER
           path: curriculum-review-artifacts/
           retention-days: 30
           if-no-files-found: error
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.5.0-INSTRUCTIONAL-EVIDENCE-REGISTER
+          name: ARMY-AI-ACADEMY-2.6.0-INSTRUCTIONAL-EVIDENCE-REGISTER
           path: instructional-evidence-artifacts/
           retention-days: 30
           if-no-files-found: error
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.5.0-PRACTICAL-ASSESSMENT-REVIEW
+          name: ARMY-AI-ACADEMY-2.6.0-PRACTICAL-ASSESSMENT-REVIEW
           path: performance-review-artifacts/
           retention-days: 30
           if-no-files-found: error
@@ -86,7 +87,7 @@ jobs:
         run: gradle :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.5.0-DEBUG-ONLY-DO-NOT-DISTRIBUTE
+          name: ARMY-AI-ACADEMY-2.6.0-DEBUG-ONLY-DO-NOT-DISTRIBUTE
           path: android-army-academy/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 7
           if-no-files-found: error

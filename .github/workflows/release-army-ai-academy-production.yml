@@ -40,7 +40,7 @@ jobs:
           echo "ACADEMY_RELEASE_KEYSTORE_PATH=$RUNNER_TEMP/academy-release.p12" >> "$GITHUB_ENV"
       - name: Verify course data and backup restore
         run: |
-          for p in app.js module_draft.js official_curriculum.js performance_practice.js quiz_upgrade.js quiz_applied_v2_3_3.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do node --check "android-army-academy/app/src/main/assets/$p"; done
+          for p in app.js module_draft.js learning_experience.js official_curriculum.js performance_practice.js quiz_upgrade.js quiz_applied_v2_3_3.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do node --check "android-army-academy/app/src/main/assets/$p"; done
           node android-army-academy/qa/backup_test.js
           node android-army-academy/qa/module_draft_test.js
           node android-army-academy/qa/question_bank_review_export.js --out review-artifacts
@@ -55,6 +55,7 @@ jobs:
           node android-army-academy/qa/instructional_evidence_audit.js --out instructional-evidence-artifacts
           node android-army-academy/qa/synthetic_practicum_test.js
           node android-army-academy/qa/institutional_no_go_test.js
+          node android-army-academy/qa/learning_experience_test.js
           node android-army-academy/qa/performance_case_suite_test.js
           node android-army-academy/qa/offline_practice_bundle_test.js
           node android-army-academy/qa/performance_review_export.js --out performance-review-artifacts
@@ -88,7 +89,7 @@ jobs:
           sha256sum "$APK" "$AAB"
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.5.0-PRODUCTION-SIGNED
+          name: ARMY-AI-ACADEMY-2.6.0-PRODUCTION-SIGNED
           path: |
             android-army-academy/app/build/outputs/apk/release/app-release.apk
             android-army-academy/app/build/outputs/bundle/release/app-release.aab
