@@ -18,6 +18,11 @@ jobs:
   emulator-smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [33, 35]
+    name: Android API ${{ matrix.api-level }} actual learning journey
     steps:
       - uses: actions/checkout@v6
         with:
@@ -41,21 +46,26 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Install, launch, restart and capture emulator screenshot
+      - name: Install, launch, restart, run learning journey instrumentation and capture screenshot
         uses: reactivecircus/android-emulator-runner@v2.38.0
         with:
-          api-level: 35
+          api-level: ${{ matrix.api-level }}
           target: google_apis
           arch: x86_64
           profile: pixel_5
           disable-animations: true
           emulator-boot-timeout: 600
-          script: bash android-army-academy/qa/emulator_smoke.sh
+          script: |
+            bash android-army-academy/qa/emulator_smoke.sh
+            gradle -p android-army-academy :app:connectedDebugAndroidTest --no-daemon --stacktrace
       - name: Upload emulator smoke evidence
         if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.6.0-EMULATOR-SMOKE-EVIDENCE
-          path: smoke-evidence/
+          name: ARMY-AI-ACADEMY-2.7.0-ANDROID-END-TO-END-API-${{ matrix.api-level }}
+          path: |
+            smoke-evidence/
+            android-army-academy/app/build/reports/androidTests/connected/
+            android-army-academy/app/build/outputs/androidTest-results/connected/
           if-no-files-found: warn
           retention-days: 7

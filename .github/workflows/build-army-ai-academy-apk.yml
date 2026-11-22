@@ -60,25 +60,25 @@ jobs:
           python3 android-army-academy/qa/release_gate.py
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.6.0-EXPERT-REVIEW-INVENTORY
+          name: ARMY-AI-ACADEMY-2.7.0-EXPERT-REVIEW-INVENTORY
           path: review-artifacts/
           retention-days: 30
           if-no-files-found: error
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.6.0-CURRICULUM-REVIEW-DOSSIER
+          name: ARMY-AI-ACADEMY-2.7.0-CURRICULUM-REVIEW-DOSSIER
           path: curriculum-review-artifacts/
           retention-days: 30
           if-no-files-found: error
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.6.0-INSTRUCTIONAL-EVIDENCE-REGISTER
+          name: ARMY-AI-ACADEMY-2.7.0-INSTRUCTIONAL-EVIDENCE-REGISTER
           path: instructional-evidence-artifacts/
           retention-days: 30
           if-no-files-found: error
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.6.0-PRACTICAL-ASSESSMENT-REVIEW
+          name: ARMY-AI-ACADEMY-2.7.0-PRACTICAL-ASSESSMENT-REVIEW
           path: performance-review-artifacts/
           retention-days: 30
           if-no-files-found: error
@@ -87,7 +87,7 @@ jobs:
         run: gradle :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.6.0-DEBUG-ONLY-DO-NOT-DISTRIBUTE
+          name: ARMY-AI-ACADEMY-2.7.0-DEBUG-ONLY-DO-NOT-DISTRIBUTE
           path: android-army-academy/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 7
           if-no-files-found: error

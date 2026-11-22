@@ -103,3 +103,42 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
 .bottom-nav .nav-icon{font-size:1.38rem}
 @media(min-width:1000px){.bottom-nav .nav-item{min-width:72px;flex:0 1 auto;min-height:69px}}
 @media(max-width:380px){.bottom-nav .nav-item{padding-left:1px;padding-right:1px}.bottom-nav .nav-icon{font-size:1.24rem}.bottom-nav .nav-item span:last-child{font-size:.57rem}}
+
+/* v2.7.0: primary learning action visibly available on a phone's first viewport. */
+.nav-icon{display:grid;place-items:center;min-height:24px}
+.nav-icon svg{display:block;width:24px;height:24px;flex-shrink:0}
+.bottom-nav .nav-item.active .nav-icon{filter:drop-shadow(0 0 6px rgba(94,242,218,.25))}
+#home-next-lesson{margin:16px 0 0}
+#home-stats{margin-top:12px}
+@media(max-width:760px){
+ .hero{min-height:0;padding:20px 20px 21px;border-radius:20px;grid-template-columns:1fr}
+ .hero h1{font-size:clamp(1.45rem,4.9vw,1.73rem);line-height:1.28;margin:10px 0 9px}
+ .hero p{font-size:.81rem;line-height:1.56;margin:0;max-width:29rem}
+ .hero-actions{margin-top:14px;gap:8px}
+ .hero-actions .btn{min-height:46px;padding:9px 15px;font-size:.83rem}
+ .hero-visual{top:-80px;right:-95px;opacity:.16;transform:scale(.70)}
+ .resume-panel{padding:17px 18px;gap:12px;border-radius:17px}
+ .resume-panel h2{font-size:1.12rem;margin:6px 0 3px}
+ .resume-panel p{margin:3px 0 10px;font-size:.79rem}
+ .resume-panel .btn{min-height:48px}
+ .intro-line{margin-bottom:10px}
+ .eyebrow{letter-spacing:.11em}
+ .nav-icon svg{width:22px;height:22px}
+}
+@media(max-width:390px){
+ .hero{padding:17px 15px}
+ .hero h1{font-size:1.43rem}
+ .hero-actions .btn{flex:1;min-width:0}
+ .hero-actions .btn-ghost{padding-left:9px;padding-right:9px}
+ .resume-panel{padding:15px 14px}
+}
+
+/* Privacy disclosure is readable without any remote network or service. */
+.privacy-inline{margin-top:15px;border:1px solid var(--line2);background:#0a1e30;border-radius:13px;overflow:hidden}
+.privacy-inline summary{min-height:48px;padding:13px 15px;cursor:pointer;font-weight:750;color:#d2f3ec}
+.privacy-inline summary:focus-visible{outline:3px solid #9fffea;outline-offset:-3px}
+.privacy-inline[open] summary{border-bottom:1px solid var(--line2)}
+.privacy-inline-body{padding:16px}
+.privacy-inline-body p{font-size:.81rem;line-height:1.8;margin:0 0 11px}
+.privacy-inline-body p:last-child{margin-bottom:0}
+.privacy-inline-body strong{color:#ecfff7}
