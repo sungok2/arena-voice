@@ -203,6 +203,7 @@ function renderModuleLesson(){
 function openModule(id,seq){
  const c=courseById(id);if(!c||!c.modules.some(m=>m.sequence===seq))return;
  openedCourse=id;openedModule=seq;moduleChoices={};moduleFeedback=false;
+ state.lastLesson={course:id,module:seq};save();
  renderModuleLesson();
  const f=$('course-dialog')?.querySelector('.modal-frame');if(f)f.scrollTop=0;
  cue('advance');
@@ -233,6 +234,7 @@ function completeModuleLesson(){
  if(!Array.isArray(state.modules[openedCourse]))state.modules[openedCourse]=[];
  if(!state.modules[openedCourse].includes(openedModule))state.modules[openedCourse].push(openedModule);
  const event=key;if(!state.xpEvents.includes(event))state.xpEvents.push(event);
+ state.lastLesson=window.ACADEMY_EXPERIENCE.suggestNext({course:openedCourse,module:openedModule},D.courses,moduleVerified);
  window.ACADEMY_MODULE_DRAFTS.clear(key);
  save();toast('학습 내용과 실습 답변을 저장했습니다. (교육용 자체 확인)');cue('success');haptic(24);
  openedModule=null;moduleChoices={};renderCourseDetail();renderHome();renderCourses();
@@ -282,6 +284,8 @@ function sanitizeBackup(input){
  }
  if(Array.isArray(b.xpEvents))clean.xpEvents=listUnique(b.xpEvents.filter(v=>typeof v==='string'&&/^(AT|DF|SP)-\d{3}:[1-6]$/.test(v)&&ids.has(v.split(':')[0])));
  if(Array.isArray(b.capstone))clean.capstone=listUnique(b.capstone.filter(n=>Number.isInteger(n)&&n>=0&&n<CAPSTONE.length));
+ clean.lastLesson=window.ACADEMY_EXPERIENCE.validTarget(b.lastLesson,D.courses);
+ clean.diagDrafts=window.ACADEMY_EXPERIENCE.cleanDiagnosticDrafts(b.diagDrafts,D.diagnostic);
  if(Array.isArray(b.diagRuns))clean.diagRuns=b.diagRuns.slice(-30).filter(r=>r&&TRACKS.includes(r.track)&&Number.isInteger(r.correct)&&r.correct>=0&&r.correct<=10&&r.total===10).map(r=>({track:r.track,correct:r.correct,total:10,time:typeof r.time==='string'?r.time.slice(0,40):'',status:'SELF_TEST_ONLY'}));
  if(b.settings&&typeof b.settings==='object'){
   for(const k of ['sound','haptics','contrast','reducedMotion'])if(typeof b.settings[k]==='boolean')clean.settings[k]=b.settings[k];
@@ -309,8 +313,8 @@ async function selectBackup(){
 }
 function openSettings(){applySettings();$('settings-dialog-content').innerHTML=settingsHTML();$('settings-dialog').showModal();}
 function updateSetting(key,val){if(key==='volume'||key==='textSize')val=Number(val);state.settings[key]=val;save();applySettings();if(key==='sound'&&val)cue('success');if(view==='profile')renderProfile();}
-function validateState(){if(!state.weights||!TRACKS.every(t=>Number.isInteger(state.weights[t])&&state.weights[t]>=0&&state.weights[t]<=100)||TRACKS.reduce((sum,t)=>sum+state.weights[t],0)!==100)state.weights={...defaults.weights};state.currentWeek=currentWeek();if(!Array.isArray(state.bookmarks))state.bookmarks=[];if(!Array.isArray(state.xpEvents))state.xpEvents=[];if(!Array.isArray(state.capstone))state.capstone=[];if(!state.modules||typeof state.modules!=='object')state.modules={};if(!state.notes||typeof state.notes!=='object')state.notes={};if(!Array.isArray(state.diagRuns))state.diagRuns=[];if(!state.lessonEvidence||typeof state.lessonEvidence!=='object'||Array.isArray(state.lessonEvidence))state.lessonEvidence={};state.bookmarks=state.bookmarks.filter(x=>courseById(x));state.xpEvents=listUnique(state.xpEvents.filter(x=>typeof x==='string'&&/^(AT|DF|SP)-\d{3}:[1-6]$/.test(x)));state.capstone=listUnique(state.capstone.filter(i=>Number.isInteger(i)&&i>=0&&i<14));for(const [id,items] of Object.entries(state.modules)){if(!courseById(id)||!Array.isArray(items)){delete state.modules[id];continue;}state.modules[id]=listUnique(items.filter(n=>Number.isInteger(n)&&n>=1&&n<=6));}for(const [id,v] of Object.entries(state.notes)){if(!courseById(id)||typeof v!=='string')delete state.notes[id];else state.notes[id]=sanitize(v);}applySettings();}
-validateState();
+function validateState(){if(!state.weights||!TRACKS.every(t=>Number.isInteger(state.weights[t])&&state.weights[t]>=0&&state.weights[t]<=100)||TRACKS.reduce((sum,t)=>sum+state.weights[t],0)!==100)state.weights={...defaults.weights};state.currentWeek=currentWeek();if(!Array.isArray(state.bookmarks))state.bookmarks=[];if(!Array.isArray(state.xpEvents))state.xpEvents=[];if(!Array.isArray(state.capstone))state.capstone=[];if(!state.modules||typeof state.modules!=='object')state.modules={};if(!state.notes||typeof state.notes!=='object')state.notes={};if(!Array.isArray(state.diagRuns))state.diagRuns=[];state.lastLesson=window.ACADEMY_EXPERIENCE.validTarget(state.lastLesson,D.courses);state.diagDrafts=window.ACADEMY_EXPERIENCE.cleanDiagnosticDrafts(state.diagDrafts,D.diagnostic);if(!state.lessonEvidence||typeof state.lessonEvidence!=='object'||Array.isArray(state.lessonEvidence))state.lessonEvidence={};state.bookmarks=state.bookmarks.filter(x=>courseById(x));state.xpEvents=listUnique(state.xpEvents.filter(x=>typeof x==='string'&&/^(AT|DF|SP)-\d{3}:[1-6]$/.test(x)));state.capstone=listUnique(state.capstone.filter(i=>Number.isInteger(i)&&i>=0&&i<14));for(const [id,items] of Object.entries(state.modules)){if(!courseById(id)||!Array.isArray(items)){delete state.modules[id];continue;}state.modules[id]=listUnique(items.filter(n=>Number.isInteger(n)&&n>=1&&n<=6));}for(const [id,v] of Object.entries(state.notes)){if(!courseById(id)||typeof v!=='string')delete state.notes[id];else state.notes[id]=sanitize(v);}applySettings();}
+validateState();restoreDiagnosticDraft('AT');
 for(const button of document.querySelectorAll('[data-view-target]'))button.addEventListener('click',()=>go(button.dataset.viewTarget));
 $('settings-open').addEventListener('click',openSettings);
 $('course-search').addEventListener('input',e=>{query=e.target.value.slice(0,80);renderCourses()});
