@@ -41,7 +41,7 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Install, launch, restart and capture emulator screenshot
+      - name: Install, launch, restart, run learning journey instrumentation and capture screenshot
         uses: reactivecircus/android-emulator-runner@v2.38.0
         with:
           api-level: 35
@@ -50,12 +50,18 @@ jobs:
           profile: pixel_5
           disable-animations: true
           emulator-boot-timeout: 600
-          script: bash android-army-academy/qa/emulator_smoke.sh
+          script: |
+            bash android-army-academy/qa/emulator_smoke.sh
+            cd android-army-academy
+            gradle :app:connectedDebugAndroidTest --no-daemon --stacktrace
       - name: Upload emulator smoke evidence
         if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.6.0-EMULATOR-SMOKE-EVIDENCE
-          path: smoke-evidence/
+          name: ARMY-AI-ACADEMY-2.7.0-ANDROID-END-TO-END-EVIDENCE
+          path: |
+            smoke-evidence/
+            android-army-academy/app/build/reports/androidTests/connected/
+            android-army-academy/app/build/outputs/androidTest-results/connected/
           if-no-files-found: warn
           retention-days: 7
