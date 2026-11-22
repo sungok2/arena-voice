@@ -1,4 +1,4 @@
-# ARMY AI EXCELLENCE ACADEMY v2.5.0 — 2027 curriculum approval candidate
+# ARMY AI EXCELLENCE ACADEMY v2.6.0 — 2027 curriculum approval candidate
 
 **Status: NOT OFFICIALLY APPROVED.** This repository is a public/synthetic curriculum-proposal and offline learner-app implementation. It is NOT an approved Republic of Korea Army course, a sanctioned grading platform, or a certificate issuer.
 
@@ -55,3 +55,12 @@ Refer to [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) and [PRIVACY_OFFLINE.md](P
 - Run `qa/performance_case_suite_test.js`, `qa/synthetic_practicum_test.js`, `qa/offline_practice_bundle_test.js` for structural computation/provenance. `qa/performance_review_export.js` emits *blank* SME, instructor, and assessor calibration records.
 - **Zero official signoffs, no independent scored exam bank, no pilot teaching efficacy, no authorized military learning records.**
 
+
+## v2.6.0 — Product-quality user experience and regression safety
+- One-tap **continue learning** from the home hero: remembers the active course+module across process restarts, and advances to the next unverified module after self-study completion. Shows accurate **self-study** progress only; never official military certification.
+- Per-track (AT / DF / SP) **resumable diagnostics**: each answer and question position are validated and saved locally; unfinished tests resume after restart. They are explicitly not independent graded exams.
+- Version-1 JSON backup remains compatible: new last-lesson pointer and diagnostic drafts are sanitized on import; old backups without them remain valid. Exact field schemas and attack-like invalid inputs are tested.
+- Visual and mobile UX: polished resume card, first-use help and skip navigation link, responsive 320px+ reflow, strong focus treatments, stable six-tab bottom navigation. Capstone is no longer a floating button that obscures learning content.
+- New `qa/learning_experience_test.js` checks resume state, course completion transitions, diagnostic draft validation, and the HTML/CSS/action integration. These tests run in debug QA, unsigned release, signed preview, and owner-signed production workflows.
+- **IMPORTANT:** `v2.6.0` is the software package version. The unchanged `2.5.0` instructional candidate remains **NOT institutionally approved**; all existing 252 lessons/534 draft questions require human validation.
+- Android package retains offline/no INTERNET permission, target SDK 36, and separate test-preview signing. A verified installable preview is still NOT an owner-signed commercial APK; see [PRODUCT_RELEASE_READINESS_2026.md](PRODUCT_RELEASE_READINESS_2026.md).
