@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#main-content">본문 콘텐츠로 이동</a>
   <div class="ambient-grid" aria-hidden="true"></div>
   <div class="app-shell">
     <header class="topbar" id="topbar">
@@ -19,7 +20,7 @@
       <div class="top-actions"><span class="offline-indicator"><i></i>OFFLINE</span><button class="icon-btn" id="settings-open" type="button" aria-label="학습 환경 설정" title="설정"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.06.06-2.76 2.76-.06-.06a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1 1.6V21h-4v-.1a1.8 1.8 0 0 0-1-1.6 1.8 1.8 0 0 0-2 .36l-.06.06-2.76-2.76.06-.06a1.8 1.8 0 0 0 .36-2 1.8 1.8 0 0 0-1.6-1H3v-4h.1a1.8 1.8 0 0 0 1.6-1 1.8 1.8 0 0 0-.36-2l-.06-.06 2.76-2.76.06.06a1.8 1.8 0 0 0 2 .36 1.8 1.8 0 0 0 1-1.6V3h4v.1a1.8 1.8 0 0 0 1 1.6 1.8 1.8 0 0 0 2-.36l.06-.06 2.76 2.76-.06.06a1.8 1.8 0 0 0-.36 2 1.8 1.8 0 0 0 1.6 1h.1v4h-.1a1.8 1.8 0 0 0-1.6 1Z"/></svg></button></div>
     </header>
 
-    <main id="main-content" class="main">
+    <main id="main-content" class="main" tabindex="-1">
       <section id="view-home" data-view="home" class="view" aria-labelledby="home-title">
         <div class="intro-line"><span class="eyebrow"><i class="pulse-dot"></i> PERSONAL MISSION CONSOLE</span><span id="today-date" class="tiny-meta"></span></div>
         <div class="hero">
@@ -27,6 +28,8 @@
           <div class="hero-visual" aria-hidden="true"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div><div class="core-glow"><svg viewBox="0 0 150 150" fill="none"><path d="M75 12 130 40v70l-55 28-55-28V40L75 12Z" stroke="#4ef5d2" stroke-width="1.5" opacity=".85"/><path d="M75 30 115 51v48l-40 21-40-21V51L75 30Z" stroke="#7baeff" stroke-width="1" opacity=".58"/><path d="M61 95 75 54l14 41m-23-13h18" stroke="#e5fff8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="star s1"></span><span class="star s2"></span><span class="star s3"></span></div>
         </div>
         <div class="stats-grid" id="home-stats"></div>
+        <section id="home-next-lesson" class="next-lesson" aria-label="이어서 학습하기"></section>
+        <details class="surface academy-guide"><summary>처음 사용하시나요? · 30초 사용 안내</summary><div class="academy-guide-body"><p>① 과목에서 원하는 강의를 선택하세요. ② 질문 두 개와 직접 실습을 통해 이해도를 스스로 점검하세요. ③ 마지막으로 작성한 내용은 기기에 저장되며, 홈의 <strong>이어서 학습</strong>에서 바로 복귀할 수 있습니다.</p><p>이 앱은 오프라인 개인학습용이며 공식 수료·성적 인증이 아닙니다. 실제 군사자료나 타인의 개인정보는 입력하지 마세요. 앱을 삭제하기 전에는 기록 탭에서 JSON 백업을 내보내세요.</p></div></details>
         <div class="section-heading"><div><span class="eyebrow">YOUR ROADMAP</span><h2>나의 학습 궤도</h2></div><button class="text-button" data-action="go" data-target="schedule" type="button">12주 전체 보기 ↗</button></div>
         <div id="home-week" class="current-week"></div>
         <div class="section-heading"><div><span class="eyebrow">FOCUS AREAS</span><h2>세 가지 전문성, 하나의 목표</h2></div></div>
@@ -94,6 +97,7 @@
   <script src="module_draft.js"></script>
   <script src="official_curriculum.js"></script>
   <script src="performance_practice.js"></script>
+  <script src="learning_experience.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
