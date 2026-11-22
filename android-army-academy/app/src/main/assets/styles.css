@@ -132,3 +132,13 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
  .hero-actions .btn-ghost{padding-left:9px;padding-right:9px}
  .resume-panel{padding:15px 14px}
 }
+
+/* Privacy disclosure is readable without any remote network or service. */
+.privacy-inline{margin-top:15px;border:1px solid var(--line2);background:#0a1e30;border-radius:13px;overflow:hidden}
+.privacy-inline summary{min-height:48px;padding:13px 15px;cursor:pointer;font-weight:750;color:#d2f3ec}
+.privacy-inline summary:focus-visible{outline:3px solid #9fffea;outline-offset:-3px}
+.privacy-inline[open] summary{border-bottom:1px solid var(--line2)}
+.privacy-inline-body{padding:16px}
+.privacy-inline-body p{font-size:.81rem;line-height:1.8;margin:0 0 11px}
+.privacy-inline-body p:last-child{margin-bottom:0}
+.privacy-inline-body strong{color:#ecfff7}
