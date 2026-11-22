@@ -18,6 +18,11 @@ jobs:
   emulator-smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [33, 35]
+    name: Android API ${{ matrix.api-level }} actual learning journey
     steps:
       - uses: actions/checkout@v6
         with:
@@ -44,7 +49,7 @@ jobs:
       - name: Install, launch, restart, run learning journey instrumentation and capture screenshot
         uses: reactivecircus/android-emulator-runner@v2.38.0
         with:
-          api-level: 35
+          api-level: ${{ matrix.api-level }}
           target: google_apis
           arch: x86_64
           profile: pixel_5
@@ -57,7 +62,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-2.7.0-ANDROID-END-TO-END-EVIDENCE
+          name: ARMY-AI-ACADEMY-2.7.0-ANDROID-END-TO-END-API-${{ matrix.api-level }}
           path: |
             smoke-evidence/
             android-army-academy/app/build/reports/androidTests/connected/
