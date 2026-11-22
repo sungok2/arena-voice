@@ -8,7 +8,7 @@ const WEEK_TITLES=['AI·데이터 기초 진단','공통역량과 정책·보안
 const LEVELS=[[0,'Recruit'],[200,'Explorer'],[500,'Learner'],[900,'Practitioner'],[1400,'Engineer'],[2000,'Specialist'],[2700,'Designer'],[3500,'Architect'],[4400,'Expert'],[5500,'Master']];
 const WEEK_TEMPLATE=[{common:9,personal:2,capstone:0,assessment:1},{common:9,personal:2,capstone:0,assessment:1},...Array.from({length:7},()=>({common:0,personal:12,capstone:0,assessment:0})),{common:0,personal:2,capstone:8,assessment:2},{common:0,personal:0,capstone:10,assessment:2},{common:0,personal:0,capstone:10,assessment:2}];
 const KEY='army_academy_rc3_local_v1';
-const defaults={weights:{AT:34,DF:33,SP:33},currentWeek:1,bookmarks:[],notes:{},modules:{},xpEvents:[],capstone:[],diagRuns:[],lessonEvidence:{},settings:{sound:false,volume:34,haptics:false,contrast:false,textSize:100,reducedMotion:false}};
+const defaults={weights:{AT:34,DF:33,SP:33},currentWeek:1,lastLesson:null,diagDrafts:{},bookmarks:[],notes:{},modules:{},xpEvents:[],capstone:[],diagRuns:[],lessonEvidence:{},settings:{sound:false,volume:34,haptics:false,contrast:false,textSize:100,reducedMotion:false}};
 const state=(()=>{try{const saved=localStorage.getItem(KEY);if(saved){const s=JSON.parse(saved);return {...structuredClone(defaults),...s,settings:{...defaults.settings,...s.settings}};}const old=JSON.parse(localStorage.getItem('academy_demo_v1')||'{}');const s=structuredClone(defaults);if(old.weights&&TRACKS.every(t=>Number.isInteger(old.weights[t])&&old.weights[t]>=0)&&TRACKS.reduce((a,t)=>a+old.weights[t],0)===100)s.weights=old.weights;if(Array.isArray(old.completed))s.capstone=old.completed.map(n=>CAPSTONE.indexOf(n)).filter(n=>n>=0);return s;}catch{return structuredClone(defaults);}})();
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -85,10 +85,45 @@ function plan(){const weights={...state.weights},hours=intTrackHours();if(TRACKS
 function changeWeight(t,v){v=Math.max(0,Math.min(100,Math.round(Number(v)||0)));const others=TRACKS.filter(x=>x!==t),n=100-v,old=state.weights[others[0]]+state.weights[others[1]];const first=old?Math.round(n*state.weights[others[0]]/old):Math.floor(n/2);state.weights[t]=v;state.weights[others[0]]=first;state.weights[others[1]]=n-first;save();renderSchedule();renderHome();cue('tap');}
 function currentWeek(){return Math.max(1,Math.min(12,Number(state.currentWeek)||1));}
 function fmtCourseList(sessions){if(!sessions?.length)return '공통 역량 · Capstone · 평가 중심';return sessions.map(s=>`${s.id} ${s.hours}h`).join(' · ');}
+// Progress here is local self-study only, not a credential.
+function renderNextLesson(){
+ const el=$('home-next-lesson');if(!el)return;
+ const engine=window.ACADEMY_EXPERIENCE;
+ const next=engine.suggestNext(state.lastLesson,D.courses,moduleVerified);
+ const info=engine.learningSummary(D.courses,moduleVerified);
+ const bar='<div class="resume-meter" role="progressbar" aria-label="자가 확인 학습 진행률" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+info.percent+'"><span style="width:'+info.percent+'%"></span></div>';
+ if(!next){
+  el.innerHTML='<div class="resume-panel"><div class="resume-copy"><span class="eyebrow">ALL LESSONS CHECKED</span><h2>자가 확인을 모두 마쳤습니다</h2><p>강의는 언제든 다시 볼 수 있습니다. 자체 체크는 공식 수료증이 아닙니다.</p>'+bar+'</div><button class="btn btn-soft" type="button" data-action="go" data-target="courses">전체 과목 복습</button></div>';
+  return;
+ }
+ const c=courseById(next.course),m=c?.modules.find(x=>x.sequence===next.module);
+ if(!c||!m)return;
+ el.innerHTML='<div class="resume-panel"><div class="resume-copy"><span class="eyebrow">MY NEXT LESSON · '+info.done+' / '+info.total+'</span><h2>'+esc(c.name_ko)+'</h2><p>모듈 '+pad(next.module)+' · '+esc(m.title)+'</p>'+bar+'<span class="resume-footnote">자체 확인 '+info.percent+'% · 기기에만 저장</span></div><button class="btn btn-primary" type="button" data-action="resume-lesson">이어서 학습 <span aria-hidden="true">→</span></button></div>';
+}
+function resumeNextLesson(){
+ const next=window.ACADEMY_EXPERIENCE.suggestNext(state.lastLesson,D.courses,moduleVerified);
+ if(!next){go('courses');return;}
+ showCourse(next.course);
+ openModule(next.course,next.module);
+}
+function saveDiagnosticDraft(){
+ if(diagFinished)return;
+ if(!state.diagDrafts||typeof state.diagDrafts!=='object')state.diagDrafts={};
+ const d=window.ACADEMY_EXPERIENCE.diagnosticForTrack(diagTrack,{index:diagIndex,answers:diagAnswers},D.diagnostic);
+ if(Object.keys(d.answers).length)state.diagDrafts[diagTrack]=d;
+ else delete state.diagDrafts[diagTrack];
+ save();
+}
+function restoreDiagnosticDraft(track){
+ if(!TRACKS.includes(track))return;
+ diagTrack=track;
+ const d=window.ACADEMY_EXPERIENCE.diagnosticForTrack(track,state.diagDrafts?.[track],D.diagnostic);
+ diagIndex=d.index;diagAnswers=d.answers;diagFinished=false;
+}
 function renderHome(){const done=counts(),xp=totalXP(),p=plan(),rank=level(),w=p.weeks[currentWeek()-1],day=new Date();$('today-date').textContent=Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric'}).format(day);
  $('home-stats').innerHTML=`<div class="stat-card"><div class="stat-main">${done}<small style="font-size:.68rem;font-weight:600;color:var(--muted)"> / 252</small></div><div class="stat-sub">자가 체크한 학습 모듈</div></div><div class="stat-card"><div class="stat-main">${xp.toLocaleString()} <small style="font-size:.65rem">XP</small></div><div class="stat-sub">학습 시연 · L${rank.lvl}</div></div><div class="stat-card"><div class="stat-main">144<small style="font-size:.68rem">h</small></div><div class="stat-sub">12주 교육 제안</div></div>`;
  $('home-week').innerHTML=`<div class="mission-card"><span class="tag tag-aqua">CURRENT MISSION · WEEK ${pad(w.week)}</span><h3 style="font-size:1.25rem;margin:15px 0 7px">${esc(WEEK_TITLES[w.week-1])}</h3><p>${esc(w.lab?.slice(0,115)||'선수지식 학습과 설계·실습을 수행합니다.')}</p><button class="btn btn-primary" data-action="open-current-week" type="button">주차별 과제 확인 ↗</button></div><div class="mission-side"><div><span class="eyebrow">MISSION PROGRESS</span><p style="margin:10px 0 0;font-size:.79rem">${esc(w.deliverable||'교육용 실습 및 평가 증거 확보')}</p></div><div class="ring" style="--pct:${Math.round(done/252*100)}%"><span>${Math.round(done/252*100)}%</span></div></div>`;
- $('home-tracks').innerHTML=TRACKS.map(t=>`<div class="track-card" data-track="${t}"><div class="track-top"><span class="track-icon">${TRACK[t].icon}</span><h3>${TRACK[t].name}</h3></div><div class="track-value">${p.track_hours[t]}<small>시간</small></div><div class="track-sub">전문학습 ${p.weights[t]}% 선택</div></div>`).join('');}
+ $('home-tracks').innerHTML=TRACKS.map(t=>`<div class="track-card" data-track="${t}"><div class="track-top"><span class="track-icon">${TRACK[t].icon}</span><h3>${TRACK[t].name}</h3></div><div class="track-value">${p.track_hours[t]}<small>시간</small></div><div class="track-sub">전문학습 ${p.weights[t]}% 선택</div></div>`).join('');renderNextLesson();}
 function candidateModuleSummary(week){
  const modules=window.ACADEMY_OFFICIAL_CANDIDATE?.module_allocations?.[week-1]?.modules||{};
  return Object.entries(modules).flatMap(([id,slots])=>slots.map(seq=>id+':'+seq+' '+(courseById(id)?.modules[seq-1]?.title||''))).join(' · ')||'전문 모듈 없는 주차';
