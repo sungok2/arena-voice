@@ -95,3 +95,11 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
 }
 @media(min-width:1000px){.next-lesson{margin-top:20px}.academy-guide{margin-top:15px}}
 @media(prefers-reduced-motion:reduce){.resume-meter span,.resume-panel .btn{transition:none!important;transform:none!important}}
+
+/* Six stable destinations: no floating action occludes content. */
+.bottom-nav{gap:2px}
+.bottom-nav .nav-item{min-width:0;flex:1;padding-left:3px;padding-right:3px;min-height:53px}
+.bottom-nav .nav-item span:last-child{font-size:clamp(.58rem,1.8vw,.69rem);white-space:nowrap}
+.bottom-nav .nav-icon{font-size:1.38rem}
+@media(min-width:1000px){.bottom-nav .nav-item{min-width:72px;flex:none;min-height:69px}}
+@media(max-width:380px){.bottom-nav .nav-item{padding-left:1px;padding-right:1px}.bottom-nav .nav-icon{font-size:1.24rem}.bottom-nav .nav-item span:last-child{font-size:.57rem}}
