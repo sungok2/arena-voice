@@ -35,7 +35,7 @@ jobs:
       - name: Validate public educational assets before personal preview
         run: |
           set -euo pipefail
-          for p in app.js module_draft.js official_curriculum.js performance_practice.js quiz_upgrade.js quiz_applied_v2_3_3.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do
+          for p in app.js module_draft.js learning_experience.js official_curriculum.js performance_practice.js quiz_upgrade.js quiz_applied_v2_3_3.js data_core.js data_assessment.js data_plan.js lesson_df001.js lesson_df_expansion.js lesson_at_expansion.js lesson_sp_expansion.js pilot_labs.js; do
             node --check "android-army-academy/app/src/main/assets/$p"
           done
           node android-army-academy/qa/backup_test.js
@@ -47,6 +47,7 @@ jobs:
           node android-army-academy/qa/performance_case_suite_test.js
           node android-army-academy/qa/offline_practice_bundle_test.js
           node android-army-academy/qa/institutional_no_go_test.js
+          node android-army-academy/qa/learning_experience_test.js
           python3 android-army-academy/qa/release_gate.py
       - name: Generate ephemeral preview signing credential
         shell: bash
@@ -85,10 +86,10 @@ jobs:
             exit 22
           fi
           mkdir -p dist
-          cp "$APK" dist/ARMY-AI-ACADEMY-v2.5.0-PERSONAL-PREVIEW.apk
+          cp "$APK" dist/ARMY-AI-ACADEMY-v2.6.0-PERSONAL-PREVIEW.apk
           (
             cd dist
-            sha256sum ARMY-AI-ACADEMY-v2.5.0-PERSONAL-PREVIEW.apk > SHA256SUMS
+            sha256sum ARMY-AI-ACADEMY-v2.6.0-PERSONAL-PREVIEW.apk > SHA256SUMS
           )
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs "$APK" > dist/SIGNING_CERTIFICATE.txt
           cat > dist/INSTALL-NOTICE.txt <<'NOTICE'
@@ -108,7 +109,7 @@ jobs:
           NOTICE
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-v2.5.0-INSTALLABLE-PERSONAL-PREVIEW
+          name: ARMY-AI-ACADEMY-v2.6.0-INSTALLABLE-PERSONAL-PREVIEW
           path: dist/
           if-no-files-found: error
           retention-days: 30
