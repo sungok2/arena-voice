@@ -114,4 +114,16 @@ public class LearningJourneyInstrumentedTest {
         assertEquals(1,resumed.getInt("answered"));
         assertTrue("Second diagnostic question should render following WebView reload",resumed.getBoolean("second"));
     }
+
+    @Test
+    public void privacyExplanationAndLocalDataControlsAreAccessibleOffline() throws Exception {
+        JSONObject result=state("(()=>{document.querySelector('#settings-open').click();const d=document.querySelector('#settings-dialog');const disclosure=d.querySelector('.privacy-inline');disclosure.open=true;return {dialog:d.open,summary:disclosure.querySelector('summary')?.innerText||'',containsDeletion:disclosure.innerText.includes('학습기록 삭제'),containsLocal:disclosure.innerText.includes('로컬 저장소'),deleteControl:Boolean(d.querySelector('[data-action=reset-progress]')),exportControl:Boolean(d.querySelector('[data-action=export-progress]'))}})()");
+        assertTrue("Settings dialog should open",result.getBoolean("dialog"));
+        assertTrue(result.getString("summary").contains("개인정보"));
+        assertTrue(result.getBoolean("containsLocal"));
+        assertTrue(result.getBoolean("containsDeletion"));
+        assertTrue(result.getBoolean("deleteControl"));
+        assertTrue(result.getBoolean("exportControl"));
+    }
+
 }
