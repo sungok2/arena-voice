@@ -1,4 +1,4 @@
-# ARMY AI EXCELLENCE ACADEMY v2.6.0 — 2027 curriculum approval candidate
+# ARMY AI EXCELLENCE ACADEMY v2.7.0 — 2027 curriculum approval candidate
 
 **Status: NOT OFFICIALLY APPROVED.** This repository is a public/synthetic curriculum-proposal and offline learner-app implementation. It is NOT an approved Republic of Korea Army course, a sanctioned grading platform, or a certificate issuer.
 
@@ -64,3 +64,11 @@ Refer to [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) and [PRIVACY_OFFLINE.md](P
 - New `qa/learning_experience_test.js` checks resume state, course completion transitions, diagnostic draft validation, and the HTML/CSS/action integration. These tests run in debug QA, unsigned release, signed preview, and owner-signed production workflows.
 - **IMPORTANT:** `v2.6.0` is the software package version. The unchanged `2.5.0` instructional candidate remains **NOT institutionally approved**; all existing 252 lessons/534 draft questions require human validation.
 - Android package retains offline/no INTERNET permission, target SDK 36, and separate test-preview signing. A verified installable preview is still NOT an owner-signed commercial APK; see [PRODUCT_RELEASE_READINESS_2026.md](PRODUCT_RELEASE_READINESS_2026.md).
+
+## v2.7.0 — Actual Android end-to-end user journey verification
+- The mobile home page puts **next lesson before progress statistics**, and the large promotional hero is intentionally shortened. A consistent set of six accessible inline SVG icons replaces platform-dependent glyphs.
+- Existing **offline learning data and 2.5.0 unapproved educational source** are preserved. The code's version is v2.7.0 (versionCode 21); the proposed instruction curriculum's source version is intentionally unchanged to avoid fabricating reapprovals.
+- Added a true Android instrumentation test in `app/src/androidTest/.../LearningJourneyInstrumentedTest.java`. It launches the actual `MainActivity`, checks six visible navigation targets, enters every screen, opens the lesson through one tap, confirms the local course/module pointer, and tests unfinished diagnostic persistence after WebView reload.
+- GitHub `academy-android-smoke.yml` executes `connectedDebugAndroidTest` **inside the emulator** after process start/restart instead of relying solely on a screenshot. Its result must be reviewed before distribution.
+- A diagnostic pass still represents **formative self-check only**; the app does not issue official education completion or scores.
+- Release prerequisites remain: permanent owner signing identity; Samsung device and TalkBack tests; independent 252-lesson, 534-question expert review; copyright/brand permission; Play Console review; legal/operator contact and support; independent institutional authorization (if official Army education is desired).
