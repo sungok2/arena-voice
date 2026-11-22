@@ -12,7 +12,7 @@ assert 'android.permission.INTERNET' not in manifest
 assert 'android.permission.READ_EXTERNAL_STORAGE' not in manifest
 assert 'android.permission.MANAGE_EXTERNAL_STORAGE' not in manifest
 assert 'minSdk 26' in gradle and 'targetSdk 36' in gradle
-assert 'versionCode 20' in gradle and "versionName '2.6.0'" in gradle
+assert 'versionCode 21' in gradle and "versionName '2.7.0'" in gradle
 assert 'signingConfigs.debug' not in gradle,'Production release must NEVER fall back to debug signing'
 assert 'if (persistentStore) signingConfig signingConfigs.production' in gradle
 assert 'WebView.setWebContentsDebuggingEnabled(false)' in java
@@ -29,4 +29,8 @@ assert html.index('src="module_draft.js"')<html.index('src="app.js"')
 assert html.index('src="learning_experience.js"')<html.index('src="app.js"')
 assert html.count('data-view-target=')>=6
 assert 'id="floating-mission"' not in html
+assert "testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'" in gradle
+assert (root/'app/src/androidTest/java/com/sungok2/armyaiacademy/LearningJourneyInstrumentedTest.java').exists()
+assert 'id="home-next-lesson"' in html and html.index('id="home-next-lesson"')<html.index('id="home-stats"')
+assert html.count('<svg viewBox="0 0 24 24" aria-hidden="true"')>=6
 print('RELEASE_SOURCE_SECURITY_GATE_PASS: signature debug fallback absent, offline-only, backup off')
