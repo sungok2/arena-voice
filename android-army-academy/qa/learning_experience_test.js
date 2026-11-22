@@ -34,6 +34,11 @@ assert(html.indexOf('src="learning_experience.js"')>0&&html.indexOf('src="learni
 for(const id of ['home-next-lesson','main-content'])assert(html.includes('id="'+id+'"'));
 assert(html.includes('class="skip-link"'));
 assert(html.includes('aria-label="이어서 학습하기"'));
+assert(html.includes('data-view-target="capstone"'), 'Capstone is first-class bottom navigation');
+assert(!html.includes('id="floating-mission"'), 'No content-obscuring floating button');
+assert(html.includes('data-action="resume-lesson"'), 'One tap continue above the fold');
+assert(app.includes("const oldFloating=$('floating-mission');if(oldFloating)"), 'Navigation no longer requires floating button');
+
 for(const fn of ['renderNextLesson','resumeNextLesson','saveDiagnosticDraft','restoreDiagnosticDraft'])assert(app.includes('function '+fn+'('));
 assert(app.includes("if(act==='resume-lesson')resumeNextLesson()"));
 assert(app.includes("state.lastLesson={course:id,module:seq};save();"));
