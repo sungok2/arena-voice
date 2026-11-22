@@ -52,8 +52,7 @@ jobs:
           emulator-boot-timeout: 600
           script: |
             bash android-army-academy/qa/emulator_smoke.sh
-            cd android-army-academy
-            gradle :app:connectedDebugAndroidTest --no-daemon --stacktrace
+            gradle -p android-army-academy :app:connectedDebugAndroidTest --no-daemon --stacktrace
       - name: Upload emulator smoke evidence
         if: always()
         uses: actions/upload-artifact@v6
