@@ -68,7 +68,10 @@ public class LearningJourneyInstrumentedTest {
     }
 
     private JSONObject state(String expression) throws Exception {
-        return new JSONObject(js("(function() { return JSON.stringify(" + expression + "); })()"));
+        String raw = js("(function() { return JSON.stringify(" + expression + "); })()");
+        assertNotNull("WebView evaluation returned no result (possibly during navigation)", raw);
+        assertFalse("WebView evaluation returned null (possibly mid-navigation)", "null".equals(raw));
+        return new JSONObject(raw);
     }
 
     private void awaitPage() throws Exception {
@@ -107,8 +110,21 @@ public class LearningJourneyInstrumentedTest {
         assertTrue(saved.getBoolean("valid"));
         assertEquals(1,saved.getInt("answered"));
         assertEquals(1,saved.getInt("index"));
+        js("window.__academyE2EReloadMarker='OLD'; 'armed'");
         js("location.reload(); 'reloading'");
-        awaitPage();
+        // Wait until a DIFFERENT WebView document finishes loading. Older Android
+        // WebView can report the previous document as ready before reload begins.
+        boolean newDocumentReady = false;
+        for (int i = 0; i < 80; i++) {
+            try {
+                String ready = js("String(Boolean(document.readyState==='complete' && window.academyQA && typeof window.__academyE2EReloadMarker==='undefined' && document.querySelector('#home-next-lesson')))");
+                if ("true".equals(ready)) { newDocumentReady = true; break; }
+            } catch (Exception ignored) {
+                // Navigating WebView may temporarily return no JavaScript result.
+            }
+            Thread.sleep(250);
+        }
+        assertTrue("Android WebView did not finish loading a NEW page after reload", newDocumentReady);
         JSONObject resumed = state("(()=>{document.querySelector('[data-view-target=diagnostic]').click();const s=JSON.parse(localStorage.getItem('army_academy_rc3_local_v1'));return {index:s.diagDrafts.AT.index,answered:Object.keys(s.diagDrafts.AT.answers).length,second:document.querySelector('.diag-top')?.innerText.includes('02')||false}})()");
         assertEquals(1,resumed.getInt("index"));
         assertEquals(1,resumed.getInt("answered"));
