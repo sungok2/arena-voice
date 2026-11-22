@@ -86,10 +86,10 @@ jobs:
             exit 22
           fi
           mkdir -p dist
-          cp "$APK" dist/ARMY-AI-ACADEMY-v2.6.0-PERSONAL-PREVIEW.apk
+          cp "$APK" dist/ARMY-AI-ACADEMY-v2.7.0-PERSONAL-PREVIEW.apk
           (
             cd dist
-            sha256sum ARMY-AI-ACADEMY-v2.6.0-PERSONAL-PREVIEW.apk > SHA256SUMS
+            sha256sum ARMY-AI-ACADEMY-v2.7.0-PERSONAL-PREVIEW.apk > SHA256SUMS
           )
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs "$APK" > dist/SIGNING_CERTIFICATE.txt
           cat > dist/INSTALL-NOTICE.txt <<'NOTICE'
@@ -109,7 +109,7 @@ jobs:
           NOTICE
       - uses: actions/upload-artifact@v6
         with:
-          name: ARMY-AI-ACADEMY-v2.6.0-INSTALLABLE-PERSONAL-PREVIEW
+          name: ARMY-AI-ACADEMY-v2.7.0-INSTALLABLE-PERSONAL-PREVIEW
           path: dist/
           if-no-files-found: error
           retention-days: 30
